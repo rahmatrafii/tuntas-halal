@@ -10,20 +10,12 @@
       "sha256": "21f65d0e53c3ab394abada906bf0dae57f7845b7a0146909526b9a3ffdd1df04"
     },
     {
-      "name": "banner-design",
-      "source": "OpenCode personal skills",
-      "origin": "~/.opencode/skills/banner-design",
-      "path": ".agents/skills/banner-design",
-      "fileCount": 2,
-      "sha256": "218cb6efb090e12c58e4bab0cd234c3b1818aefde7757beb4fbd7e1e8524e8d4"
-    },
-    {
-      "name": "brand",
-      "source": "OpenCode personal skills",
-      "origin": "~/.opencode/skills/brand",
-      "path": ".agents/skills/brand",
-      "fileCount": 18,
-      "sha256": "fc642addfea26dda98cc1e94d2a24304b531b4c6d4babc4f6074583fdbc9e52e"
+      "name": "brainstorming",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/brainstorming",
+      "path": ".agents/skills/brainstorming",
+      "fileCount": 9,
+      "sha256": "415262eefc8febcf4885fe7ed3419d02338d3328c474cf3a46174d7d6c1e997c"
     },
     {
       "name": "caveman",
@@ -42,14 +34,6 @@
       "sha256": "18ac38fea97007cb8e20f68686d15992e7c9418e7eaaaefe2f30e2150d142817"
     },
     {
-      "name": "design",
-      "source": "OpenCode personal skills",
-      "origin": "~/.opencode/skills/design",
-      "path": ".agents/skills/design",
-      "fileCount": 35,
-      "sha256": "43a300756145a47feafc6b545e8ccf3fde7370d659510b0a4fde26a95c58755e"
-    },
-    {
       "name": "design-system",
       "source": "OpenCode personal skills",
       "origin": "~/.opencode/skills/design-system",
@@ -64,6 +48,38 @@
       "path": ".agents/skills/design-taste-frontend",
       "fileCount": 39,
       "sha256": "a0a763b629dba03f0adfecc6edcff559795c0c0a52e98c35853d141787144ab5"
+    },
+    {
+      "name": "diagnosing-superpowers",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/diagnosing-superpowers",
+      "path": ".agents/skills/diagnosing-superpowers",
+      "fileCount": 21,
+      "sha256": "e28d8381894e4a98bde7bc654e7387ff924ff874c9a8d5e6f0d0bf2cd4562cec"
+    },
+    {
+      "name": "dispatching-parallel-agents",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/dispatching-parallel-agents",
+      "path": ".agents/skills/dispatching-parallel-agents",
+      "fileCount": 2,
+      "sha256": "76488abee597b16eae23a07e857d0b80b9b9b0dd84ea31ac8d512aa1716cada0"
+    },
+    {
+      "name": "executing-plans",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/executing-plans",
+      "path": ".agents/skills/executing-plans",
+      "fileCount": 4,
+      "sha256": "1b7005a27da11d39d9ae60605a03b3858c13a22281836bf3d1cddfd0e3cd9982"
+    },
+    {
+      "name": "finishing-a-development-branch",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/finishing-a-development-branch",
+      "path": ".agents/skills/finishing-a-development-branch",
+      "fileCount": 2,
+      "sha256": "0368832e0f1b675e5f632bf79e976785b779c4b0eeda0269784ffee660e13027"
     },
     {
       "name": "frontend-design",
@@ -114,22 +130,6 @@
       "sha256": "cc4a7cc4a346eba18780b42cedeb8ec142881580548f7addc70fb8475048c708"
     },
     {
-      "name": "ponytail-gain",
-      "source": "Ponytail plugin 5.3.2",
-      "origin": "~/.codex/plugins/cache/ponytail/ponytail/5.3.2/skills/ponytail-gain",
-      "path": ".agents/skills/ponytail-gain",
-      "fileCount": 1,
-      "sha256": "8a691b2d50a67fd683e3804c273dc0ddd6c6562fa4a4bf4ea46f1c2ebbf06415"
-    },
-    {
-      "name": "ponytail-help",
-      "source": "Ponytail plugin 5.3.2",
-      "origin": "~/.codex/plugins/cache/ponytail/ponytail/5.3.2/skills/ponytail-help",
-      "path": ".agents/skills/ponytail-help",
-      "fileCount": 1,
-      "sha256": "d4ad87cf3204de037875717d393f3488787401f9b64bc6fa986d5b87d13b9072"
-    },
-    {
       "name": "ponytail-review",
       "source": "Ponytail plugin 5.3.2",
       "origin": "~/.codex/plugins/cache/ponytail/ponytail/5.3.2/skills/ponytail-review",
@@ -138,12 +138,44 @@
       "sha256": "01c2558fb9f1ead3513a9874a7f7284aedbc1b0e68f6b420fcad15d425cd3d85"
     },
     {
-      "name": "slides",
-      "source": "OpenCode personal skills",
-      "origin": "~/.opencode/skills/slides",
-      "path": ".agents/skills/slides",
-      "fileCount": 6,
-      "sha256": "fe6274bb368370025900da6ca8045c845e626a896109571a2a17d9f2d46f69ce"
+      "name": "receiving-code-review",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/receiving-code-review",
+      "path": ".agents/skills/receiving-code-review",
+      "fileCount": 2,
+      "sha256": "04655804d8ec7ea16b24a9b699ebe88b673b947aedd9dff405dba94e4bea7e66"
+    },
+    {
+      "name": "requesting-code-review",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/requesting-code-review",
+      "path": ".agents/skills/requesting-code-review",
+      "fileCount": 3,
+      "sha256": "02d6855edee9fc6d84245e826e82fc553af806596a7a00be0bbe1c6b632614f9"
+    },
+    {
+      "name": "subagent-driven-development",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/subagent-driven-development",
+      "path": ".agents/skills/subagent-driven-development",
+      "fileCount": 15,
+      "sha256": "f1a35f8d8025c0bb7f5bd77e6a869d319fe92f92d9bfc1f4458e454cce92c90c"
+    },
+    {
+      "name": "systematic-debugging",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/systematic-debugging",
+      "path": ".agents/skills/systematic-debugging",
+      "fileCount": 12,
+      "sha256": "9d7eefb76620b2b15d788644defcccae3975f0430d51d3b924fcfde93915a341"
+    },
+    {
+      "name": "test-driven-development",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/test-driven-development",
+      "path": ".agents/skills/test-driven-development",
+      "fileCount": 3,
+      "sha256": "2ab29900a8c3dd1472e1a73e51f555ca703c2a2fa979829be458b23b410bb16a"
     },
     {
       "name": "ui-styling",
@@ -160,6 +192,46 @@
       "path": ".agents/skills/ui-ux-pro-max",
       "fileCount": 68,
       "sha256": "7b58a8a44a41a474c235680bd1f5c9f7c324514338a7bd695fe0a8a7409b3314"
+    },
+    {
+      "name": "using-git-worktrees",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/using-git-worktrees",
+      "path": ".agents/skills/using-git-worktrees",
+      "fileCount": 2,
+      "sha256": "1166f732e78aa99f3eabd88d42b4e8e31af86937ffdd76e7dbad615bc0a4f881"
+    },
+    {
+      "name": "using-superpowers",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/using-superpowers",
+      "path": ".agents/skills/using-superpowers",
+      "fileCount": 9,
+      "sha256": "a11faee664397591dd9bdc0843577fc3c6ce3d62c9f27c6ac4f9f854f59ec0b1"
+    },
+    {
+      "name": "verification-before-completion",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/verification-before-completion",
+      "path": ".agents/skills/verification-before-completion",
+      "fileCount": 2,
+      "sha256": "260298a9cc00380686ae0bc1bca902656bfb7fceb92b2392affb9610a308bbcb"
+    },
+    {
+      "name": "writing-plans",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/writing-plans",
+      "path": ".agents/skills/writing-plans",
+      "fileCount": 2,
+      "sha256": "a3ed23d11094f4fc29133f84f4e5c772719f1cdff3f305ea7e9ec8ee42b10ee5"
+    },
+    {
+      "name": "writing-skills",
+      "source": "Superpowers plugin 7.0.1",
+      "origin": "~/.codex/plugins/cache/openai-curated-remote/superpowers/7.0.1/skills/writing-skills",
+      "path": ".agents/skills/writing-skills",
+      "fileCount": 11,
+      "sha256": "de8e1e00b9f54e04156346db6a0cd99dc523dd7cd72586d22743a2d9f357fc5f"
     }
   ]
 }

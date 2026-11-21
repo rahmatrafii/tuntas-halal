@@ -19,7 +19,7 @@ Jalankan `npm run dev`, lalu buka `http://localhost:3000`. Backend tidak diperlu
 
 1. **Balasan sebagian:** pada Keripik Bu Rina, ubah satu tugas menunggu menjadi Perlu dicek. Tugas kedua tetap menunggu.
 2. **Kirim gabungan:** pilih dua tugas dari satu kasus, buka/tutup pratinjau; status tetap. Pilih tugas yang benar-benar dikirim, lalu Tandai sudah dikirim.
-3. **Draf bertahan:** sunting pesan, pindah halaman, buka kembali draf dari detail kasus. Isi disimpan di browser.
+3. **Draf bertahan:** buka detail revisi → Siapkan pesan (URL berisi `?pilih=...`), ubah pilihan revisi dan sunting pesan, lalu reload halaman. Pesan dan pilihan harus tetap tersedia. Coba juga pindah halaman dan buka kembali draf dari detail kasus. Draf disimpan per kasus; parameter URL hanya menentukan pilihan awal saat belum ada draf tersimpan.
 4. **Pengalihan terbatas:** sebagai Ratna, alihkan kasus Rina ke Farhan. Beralih ke Nadia: kasus tersebut tidak terlihat; kasus Rina yang lama tetap ada. Sebagai Farhan, kontak Rina dapat dibaca tanpa membuka kasus lamanya.
 5. **Koreksi nomor:** Kontak → Ubah kontak. Form menolak nomor invalid; draf memiliki fallback Salin pesan bila data kontak invalid.
 6. **Reset:** Akun → Atur ulang data contoh. Tidak memengaruhi file project atau backend.

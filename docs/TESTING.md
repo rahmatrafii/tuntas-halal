@@ -16,6 +16,8 @@ Unit test memakai Node test runner melalui `tsx`, tanpa service eksternal. Fokus
 
 `tests/demo.test.ts` menguji pencarian/antrean, balasan sebagian, versi usang, pengalihan kasus tanpa membuka kasus kontak lain, batas koordinator, dan sesi kosong. `tests/frontend.test.tsx` memakai Testing Library + jsdom untuk pencarian/filter, validasi/duplikasi kontak, double save revisi, draf/pengiriman terpisah, persistensi pesan, nomor invalid, gagal simpan/retry, serta login undangan simulasi.
 
+Regresi reload draf diuji melalui pembukaan ulang tautan tugas di `tests/frontend.test.tsx` dan modul store baru di `tests/draft-reload.test.tsx`. Tes kedua menyiapkan draf hanya di localStorage sebelum layar pertama dirender, lalu memeriksa pesan, pilihan revisi, dan tidak adanya mutasi data. Keduanya gagal sebelum perbaikan prioritas draf tersimpan atas parameter `?pilih=...`; ini bukti DOM/store, bukan reload pada browser nyata.
+
 `tests/dom-setup.ts` menyediakan DOM virtual. Native dialog dimock untuk menguji alur komponen; fokus modal, scrolling, safe area, tata letak, dan screenshot bukan bukti dari tes ini. jsdom belum mengenali elemen semantik `<search>` dan dapat menampilkan peringatan React khusus environment tes.
 
 Kontrak frontend yang diimplementasikan: localStorage disimpan sebelum state dipublikasikan, state versi usang ditolak, pengiriman hanya mengubah tugas terpilih, draft tidak mengubah instruksi. Semua ini tetap simulasi browser, belum transaksi/audit/RLS database.

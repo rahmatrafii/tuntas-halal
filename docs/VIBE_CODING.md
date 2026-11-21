@@ -6,6 +6,10 @@ Produk membantu pendamping menuntaskan tindak lanjut revisi, bukan mengirim What
 
 Frontend dummy seluruh alur sudah tersedia. Desain mengikuti `public/image.png` dan `DESIGN_SYSTEM.md`. Selama instruksi pengguna masih frontend dahulu, pertahankan simulasi lokal dan jangan menggantinya dengan koneksi backend otomatis. Gunakan `FRONTEND_DEMO.md` untuk mencoba alur.
 
+Superpowers 7.0.1 sudah terpasang pada komputer dan 15 skill-nya tersedia di `.agents/skills`. Total project kini 29 skill setelah enam skill pilihan pengguna dikeluarkan dan diarsipkan di luar project; daftar pengecualian sync mencegah pemasangan ulang. Mulai chat baru untuk memperbarui daftar skill; pilih sesuai task sebagaimana contoh di `SKILLS.md`. UI02 tetap menjadi pekerjaan produk berikutnya.
+
+UI03 memperbaiki draf yang tampak hilang setelah reload tautan tugas: `draft-screen.tsx` kini mengutamakan draf kasus tersimpan atas `?pilih=...`. Dua tes regresi ditambahkan; check 26/26 tes dan build lulus. Host browser tidak tersedia, sehingga reload nyata masih perlu diperiksa sesuai `FRONTEND_DEMO.md`. Fase tetap frontend dummy dan UI02 tetap terbuka.
+
 ## Prompt awal yang siap dipakai
 
 ```text

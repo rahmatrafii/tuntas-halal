@@ -73,6 +73,7 @@ Untuk setiap chat tentang desain, portofolio, Figma, atau antarmuka, gunakan sud
 ## Peta skill
 
 - Coding sederhana: `ponytail`; review/audit atas permintaan: `ponytail-review`, `ponytail-audit`.
+- Workflow pengembangan: 15 skill Superpowers 7.0.1 tersedia lokal untuk perencanaan, debugging, pengujian, review, dan Git; pilih sesuai task. Contoh pemakaian ada di `docs/SKILLS.md`.
 - UI baru: `ui-ux-pro-max`, lalu `modern-web-guidance` sebelum HTML/CSS/client JS.
 - Pilih seperlunya: `frontend-design`, `anti-slop-design`, `design-taste-frontend`, `ui-styling`, `design-system`, `micro-interactions`.
 - Skill tambahan tersedia, bukan mandat untuk mengubah tone, menambah animasi, atau memperluas scope. Aturan pengguna dan PRD didahulukan.

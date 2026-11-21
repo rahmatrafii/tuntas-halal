@@ -38,12 +38,12 @@ function DraftEditor({ id, selectedId }: { id: string; selectedId?: string }) {
     (task) => task.status !== "completed",
   );
   const stored = state.drafts[id];
+  // The URL selects tasks for a new draft; saved edits take precedence on reload.
   const initialSelected =
-    selectedId && tasks.some((task) => task.id === selectedId)
+    stored?.selected.filter((key) => tasks.some((task) => task.id === key)) ??
+    (selectedId && tasks.some((task) => task.id === selectedId)
       ? [selectedId]
-      : (stored?.selected.filter((key) =>
-          tasks.some((task) => task.id === key),
-        ) ?? tasks.map((task) => task.id));
+      : tasks.map((task) => task.id));
   const compose = (ids: string[]) =>
     ids.length
       ? composeWhatsAppDraft({
@@ -54,7 +54,7 @@ function DraftEditor({ id, selectedId }: { id: string; selectedId?: string }) {
       : "";
   const [selected, setSelected] = useState(initialSelected);
   const [message, setMessage] = useState(
-    !selectedId && stored ? stored.message : compose(initialSelected),
+    stored ? stored.message : compose(initialSelected),
   );
   const [followUp, setFollowUp] = useState("");
   const [chatOpen, setChatOpen] = useState(false);

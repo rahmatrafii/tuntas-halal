@@ -171,6 +171,41 @@ test("edited draft persists between screens without changing the instruction", a
   assert.equal(snapshot().tasks[0].instruction, instruction);
 });
 
+test("saved draft and task choices survive reopening a task-specific link", async () => {
+  const user = userEvent.setup();
+  const view = mount(
+    <DraftScreen id="kasus-rina" selectedId="t-rina-1" />,
+  );
+  const checkboxes = screen.getAllByRole("checkbox") as HTMLInputElement[];
+  assert.deepEqual(checkboxes.map((checkbox) => checkbox.checked), [true, false]);
+  await user.click(checkboxes[1]);
+  const message = screen.getByRole("textbox", {
+    name: "Isi draf pesan WhatsApp",
+  });
+  await user.clear(message);
+  await user.type(message, "Pesan tersimpan setelah reload.");
+  assert.equal(
+    snapshot().drafts["kasus-rina"].message,
+    "Pesan tersimpan setelah reload.",
+  );
+
+  view.unmount();
+  mount(<DraftScreen id="kasus-rina" selectedId="t-rina-1" />);
+
+  assert.equal(
+    (screen.getByRole("textbox", {
+      name: "Isi draf pesan WhatsApp",
+    }) as HTMLTextAreaElement).value,
+    "Pesan tersimpan setelah reload.",
+  );
+  assert.deepEqual(
+    (screen.getAllByRole("checkbox") as HTMLInputElement[]).map(
+      (checkbox) => checkbox.checked,
+    ),
+    [true, true],
+  );
+});
+
 test("invalid phone blocks chat preview while keeping copy and correction actions available", async () => {
   act(() =>
     updateDemo((state) => ({
