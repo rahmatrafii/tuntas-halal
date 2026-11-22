@@ -10,6 +10,8 @@ Pesan yang belum disunting akan disusun mengikuti pilihan. Setelah suntingan man
 
 ## Penyimpanan di perangkat
 
+F06 menambahkan bagian **Catat pengiriman** sesudah aksi ekspor. Ini membuka form status tersendiri dengan pilihan ID sebagai saran; tidak menyimpan pesan ke database atau menganggap klik WhatsApp sebagai bukti terkirim. Konfirmasi dan kebijakan tanggal wajib diperiksa pengguna. Draf perangkat tetap tersedia setelah status dicatat; lihat [STAFF_STATUS.md](STAFF_STATUS.md).
+
 Draf memakai namespace browser terpisah dari demo, terikat akun/LP3H/kasus. Payload menyimpan ID pilihan, isi pesan, versi snapshot dan penanda suntingan, bukan token atau objek kontak/tugas lengkap. Browser/origin lain tidak otomatis menerima draf. Penyimpanan ini bukan otorisasi atau brankas terenkripsi; akses aplikasi tetap diperiksa melalui sesi server/RLS.
 
 Draf kosong yang sengaja disimpan juga dipulihkan. Tidak menulis seed sebelum pemulihan. Ketika storage rusak, aplikasi tidak langsung menimpanya; pilih **Mulai draf baru** secara eksplisit. Ketika storage tidak tersedia/penuh, isian tetap dapat disunting di halaman tetapi pemulihan setelah reload belum terjamin. Jangan menganggap label gagal sebagai simpan berhasil.

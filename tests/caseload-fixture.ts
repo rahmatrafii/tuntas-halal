@@ -10,7 +10,7 @@ export const contact = {id: resource, organization_id: org, owner_id: actor, bus
   whatsapp_number: "6281200000101", greeting_name: "Ibu", version: 2, created_at: "2026-11-21T00:00:00Z"};
 
 export function fixture(options: {role?: "companion"|"coordinator"; active?: boolean; authError?: boolean;
-  rows?: Record<string, unknown[]>; rpcError?: {code:string;message:string}; rpcThrows?: boolean; onRpc?:()=>void; queryError?:string; paginate?:boolean} = {}) {
+  rows?: Record<string, unknown[]>; rpcData?:unknown; rpcError?: {code:string;message:string}; rpcThrows?: boolean; onRpc?:()=>void; queryError?:string; paginate?:boolean} = {}) {
   const calls: {url:URL;body:Record<string,unknown>|null}[] = [];
   const client = createClient<Database>("https://database.example.test", "public-test-key", {
     auth: {persistSession:false, autoRefreshToken:false},
@@ -21,7 +21,7 @@ export function fixture(options: {role?: "companion"|"coordinator"; active?: boo
       if (url.pathname.includes("/rpc/")) {
         options.onRpc?.();
         if (options.rpcThrows) throw new Error("private provider diagnostic must not reach user");
-        return new Response(JSON.stringify(options.rpcError ?? {id:body?.p_id ?? resource,version:3}), {
+        return new Response(JSON.stringify(options.rpcError ?? options.rpcData ?? {id:body?.p_id ?? resource,version:3}), {
           status: options.rpcError ? (options.rpcError.code === "PT409" ? 409 : 400) : 200,
           headers:{"content-type":"application/json"},
         });

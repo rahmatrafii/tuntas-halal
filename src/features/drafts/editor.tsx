@@ -63,7 +63,7 @@ export function DraftEditor({context:initial,selectedId,permalink,action}:Props)
   async function run(intent:DraftRequest["intent"]){
     const value=current.current;if(working.current||nativePending||denied||(!value&&intent!=="refresh"))return;
     if(intent!=="refresh"&&blocked.current)return;
-    working.current=true;setBusy(true);setError("");setLink(null);
+    working.current=true;setBusy(true);setError("");if(intent!=="copy")setLink(null);
     const revision=generation.current,body=new FormData();
     body.set("draftRequest",JSON.stringify({...value,intent,userId:initial.userId}));
     try{
@@ -72,8 +72,8 @@ export function DraftEditor({context:initial,selectedId,permalink,action}:Props)
       if(reply.status==="forbidden"||(reply.context&&reply.context.userId!==initial.userId)){
         setDenied(true);setLink(null);setError("Akses draf tidak lagi tersedia. Masuk kembali atau buka kasus yang ditugaskan kepada Anda.");return;
       }
-      if(revision!==generation.current){setError("Draf berubah selama pemeriksaan. Tinjau isian dan coba lagi.");return;}
-      if(!reply.context||!["ready","changed"].includes(reply.status)){setError(reply.notice??"Draf belum dapat diperiksa. Coba lagi.");return;}
+      if(revision!==generation.current){setLink(null);setError("Draf berubah selama pemeriksaan. Tinjau isian dan coba lagi.");return;}
+      if(!reply.context||!["ready","changed"].includes(reply.status)){setLink(null);setError(reply.notice??"Draf belum dapat diperiksa. Coba lagi.");return;}
       const latest=reply.context;currentContext.current=latest;setContext(latest);
       if(!value)return;
       if(reply.status==="changed"||(intent==="refresh"&&changed(value,latest))){
@@ -91,7 +91,7 @@ export function DraftEditor({context:initial,selectedId,permalink,action}:Props)
         if(reply.longUrl)announce("Pesan terlalu panjang untuk tautan. Salin pesan lengkap lalu lanjut ke chat tanpa teks.");
         else window.location.assign(reply.url);
       }
-    }catch{if(mounted.current)setError("Koneksi pemeriksaan gagal. Isian tetap tersedia; coba lagi.");}
+    }catch{if(mounted.current){setLink(null);setError("Koneksi pemeriksaan gagal. Isian tetap tersedia; coba lagi.");}}
     finally{working.current=false;if(mounted.current)setBusy(false);}
   }
   function toggle(ids:string[]){
@@ -119,7 +119,7 @@ export function DraftEditor({context:initial,selectedId,permalink,action}:Props)
   }
   const selected=draft?.selected??[],canExport=Boolean(draft&&selected.length&&draft.message.trim()&&!draft.needsReview&&!block&&!busy);
   return <>
-    <p role="status" aria-live="polite">{notice||nativeReply.notice||""}</p>
+    <p className="draft-feedback" role="status" aria-live="polite">{notice||nativeReply.notice||""}</p>
     {error&&<p className="notice error" role="alert">{error}</p>}
     {denied?<Link className="button outline" href="/staf">Kembali ke akun staf</Link>:<>
       <div className="record-details"><p><strong>{context.businessName}</strong>{context.greetingName&&` · ${context.greetingName}`}</p><p>Penerima WhatsApp: {context.phone?`+${context.phone}`:"Nomor belum tersedia"}</p></div>
@@ -134,7 +134,7 @@ export function DraftEditor({context:initial,selectedId,permalink,action}:Props)
         <button type="button" className="button outline" onClick={adopt}>Muat draf tab lain</button>{draft&&<button type="button" className="button outline" onClick={()=>restart(true)}>Pertahankan draf tab ini</button>}
       </section>}
       {draft&&<>
-        <section><h2>Pilih revisi · {selected.length} dipilih</h2>
+        <section className="draft-selection"><h2>Pilih revisi</h2><p className="field-hint">{selected.length} revisi dipilih</p>
           {!context.tasks.length?<p className="notice">Tidak ada revisi aktif. <Link href={`${base}/revisi/baru`}>Tambah revisi</Link></p>:<>
             <button type="button" className="button text" disabled={busy} onClick={()=>toggle(selected.length===context.tasks.length?[]:context.tasks.map(t=>t.id))}>{selected.length===context.tasks.length?"Hapus semua pilihan":"Pilih semua revisi aktif"}</button>
             {context.tasks.slice((page-1)*20,page*20).map(task=><label className="draft-task-option" key={task.id}>
@@ -144,12 +144,12 @@ export function DraftEditor({context:initial,selectedId,permalink,action}:Props)
             {context.tasks.length>20&&<nav className="record-pagination" aria-label="Halaman pilihan revisi"><button type="button" className="button outline" disabled={page===1} onClick={()=>setPage(page-1)}>Sebelumnya</button><span>Halaman {page}</span><button type="button" className="button outline" disabled={page*20>=context.tasks.length} onClick={()=>setPage(page+1)}>Berikutnya</button></nav>}
           </>}
         </section>
-        {draft.needsReview&&<section className="notice record-conflict" aria-label="Tinjau draf"><h2>Tinjau pilihan dan penerima</h2><p>Pilihan atau data berubah. Pesan suntingan tetap tersedia. Tinjau instruksi di atas sebelum melanjutkan.</p>
+        {draft.needsReview&&<section className="notice record-conflict" aria-label="Tinjau draf"><h2>Tinjau draf</h2><p>Pilihan atau data berubah. Pesan Anda tetap tersedia. Periksa revisi dan penerima sebelum melanjutkan.</p>
           <button type="button" className="button outline" disabled={busy||!selected.length||Boolean(block)} onClick={()=>void run("compose")}>Susun ulang pesan</button>
           <button type="button" className="button outline" disabled={busy||Boolean(block)} onClick={keep}>Gunakan pesan suntingan</button>
         </section>}
         <div className="field"><label htmlFor="draft-message">Isi draf pesan WhatsApp</label><textarea ref={textarea} id="draft-message" rows={10} maxLength={64000} readOnly={continuing||nativePending} value={draft.message} aria-describedby="draft-help" onChange={event=>{setError("");remember({...current.current!,message:event.target.value,edited:true});}}/>
-          <p className="field-hint" id="draft-help">Perubahan pesan tidak mengubah instruksi revisi. Maksimal 64.000 karakter.</p><p>{saved}</p>
+          <p className="field-hint" id="draft-help">Suntingan hanya berlaku pada pesan ini. Instruksi revisi tetap sama. Maksimal 64.000 karakter.</p><p className="draft-save-status">{saved}</p>
         </div>
         {!normalizeWhatsAppNumber(context.phone)&&<p className="notice error">Nomor WhatsApp belum valid. Salin pesan tetap tersedia. {context.contactOwnerId===context.userId?<Link href={`/staf/lembaga/${context.organizationId}/kontak/${context.contactId}/edit`}>Koreksi kontak</Link>:"Minta pemilik kontak memperbaiki nomor melalui koordinator."}</p>}
         <div className="form-actions">
@@ -158,12 +158,13 @@ export function DraftEditor({context:initial,selectedId,permalink,action}:Props)
           {!draft.needsReview&&<button type="button" className="button text full" disabled={busy||!selected.length||Boolean(block)} onClick={()=>void run("compose")}>Susun ulang pesan</button>}
         </div>
         {link&&<form action={submit} onSubmit={continueChat} aria-busy={continuing||nativePending} className="notice record-conflict" aria-label="Lanjut ke WhatsApp">
-          <p>{link.long?"Salin pesan lengkap, lalu buka chat tanpa teks.":"Jika WhatsApp belum terbuka, lanjutkan melalui tombol berikut."}</p>
+          <p>{link.long?"Salin pesan lengkap, buka chat, lalu tempel pesan di WhatsApp.":"WhatsApp belum terbuka? Tekan tombol berikut."}</p>
           <input type="hidden" name="draftRequest" value={JSON.stringify({...draft,intent:"open",userId:initial.userId})}/>
           <input type="hidden" name="continueChat" value="1"/>
           <button type="submit" className="button outline" disabled={busy}>Lanjut ke WhatsApp</button>
         </form>}
-        <p className="notice">Kirim pesan di WhatsApp setelah meninjau penerima dan isinya. Membuka chat atau menyalin pesan tidak mengubah status revisi.</p>
+        <p className="notice">Periksa penerima dan pesan sebelum mengirim di WhatsApp. Membuka chat atau menyalin pesan tidak mengubah status revisi.</p>
+        <section className="send-confirmation"><h2>Catat pengiriman</h2><p>Sudah mengirim pesan? Pilih revisi yang benar-benar dikirim untuk dicatat sebagai Menunggu balasan.</p><Link className="button outline full" href={`${base}/pengiriman?${new URLSearchParams(selected.slice(0,100).map(id=>["pilih",id])).toString()}`}>Catat revisi yang dikirim</Link></section>
         <button type="button" className="button text" disabled={busy||Boolean(block)} onClick={()=>setDeleting(true)}>Hapus draf</button>
         {deleting&&<section className="notice" aria-label="Konfirmasi hapus draf"><p>Hapus draf kasus ini dari perangkat?</p><button type="button" className="button outline" onClick={remove}>Ya, hapus draf</button><button type="button" className="button text" onClick={()=>setDeleting(false)}>Batal hapus</button></section>}
       </>}

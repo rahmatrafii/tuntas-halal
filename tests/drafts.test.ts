@@ -3,7 +3,21 @@ import {test} from "node:test";
 import {fixture,org,otherOrg,seed,contact} from "./caseload-fixture";
 import {caseId,taskId,caseRow,taskRow,draftRequest} from "./draft-fixture";
 import {loadDraftContext,prepareDraft} from "../src/features/drafts/service";
+import {whatsappChatUrl} from "../src/lib/domain/whatsapp";
 const rows={cases:[caseRow],business_contacts:[contact],revision_tasks:[taskRow]};
+test("export keeps text at exactly 8000 encoded URL characters and falls back above that limit",async()=>{
+  const prefixLength=whatsappChatUrl(contact.whatsapp_number,"x")!.length-1;
+  for(const length of [8000,8001]){
+    const message="x".repeat(length-prefixLength),f=fixture({rows});
+    assert.equal(whatsappChatUrl(contact.whatsapp_number,message)!.length,length);
+    const reply=await prepareDraft(f.client,org,caseId,{...draftRequest,message});
+    assert.equal(reply.status,"ready");assert.equal(reply.longUrl,length>8000);
+    const url=new URL(reply.url!);
+    assert.equal(url.searchParams.get("text"),length===8000?message:null);
+    if(length>8000)assert.equal(reply.url,"https://wa.me/6281200000101");
+    assert(!f.calls.some(c=>c.body));assert.equal(taskRow.status,"needs_sending");
+  }
+});
 test("draft context requires active assigned companion and scoped reads without mutation",async()=>{
   const f=fixture({rows}),reply=await loadDraftContext(f.client,org,caseId);
   assert.equal(reply.status,"ready");assert.equal(reply.context?.phone,"6281200000101");assert.equal(reply.context?.tasks.length,1);
@@ -22,7 +36,7 @@ test("draft export rejects foreign completed duplicate IDs and unsafe requests",
 });
 test("export uses current server recipient and encodes characters without business writes",async()=>{
   const f=fixture({rows}),reply=await prepareDraft(f.client,org,caseId,{...draftRequest,phone:"6281999999999"});
-  assert.equal(reply.status,"ready");assert.equal(new URL(reply.url!).pathname,"/6281200000101");
+  assert.equal(reply.status,"ready");assert.equal(new URL(reply.url!).searchParams.get("phone"),"6281200000101");
   assert.equal(new URL(reply.url!).searchParams.get("text"),draftRequest.message);
   assert(!f.calls.some(c=>c.body));
 });

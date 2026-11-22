@@ -87,10 +87,12 @@ test("Indonesian and international numbers normalize without accepting text or e
   }
 });
 
-test("chat links encode special characters and reject invalid input", () => {
-  const message = "Foto A & B + komposisi?\nTerima kasih.";
+test("chat links bypass the Unicode-corrupting short-link redirect and preserve message characters", () => {
+  const message = "Foto A & B + komposisi? ✅\nTerima kasih 🙏.";
   const url = new URL(whatsappChatUrl("081200000000", message)!);
-  assert.equal(url.origin, "https://wa.me");
+  assert.equal(url.origin, "https://api.whatsapp.com");
+  assert.equal(url.pathname, "/send");
+  assert.equal(url.searchParams.get("phone"), "6281200000000");
   assert.equal(url.searchParams.get("text"), message);
   assert.equal(whatsappChatUrl("invalid", message), null);
   assert.equal(whatsappChatUrl("081200000000", " "), null);

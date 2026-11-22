@@ -1,33 +1,44 @@
 @import "tailwindcss";
 
-.staff-area { max-width: 640px; margin: 0 auto; padding: max(28px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom)); }
-.staff-brand { display: flex; align-items: baseline; gap: 12px; font-size: 20px; font-weight: 700; margin-bottom: 28px; }
-.staff-brand span { color: var(--muted); font-size: 14px; font-weight: 400; }
-.staff-card { background: var(--card); border-radius: var(--radius-card); padding: 28px 20px; }
-.staff-card h1 { font-size: 28px; line-height: 1.2; margin: 0 0 16px; }
-.staff-card h2 { font-size: 18px; margin: 28px 0 16px; }
-.staff-card .field input { font-size: 16px; min-height: 48px; border-color: #767676; }
-.staff-help, .staff-demo-link { display: block; margin-top: 24px; font-size: 14px; line-height: 1.6; }
+.staff-area { max-width: 40rem; min-block-size: 100dvh; margin: 0 auto; padding: max(1.75rem, env(safe-area-inset-top)) 1.25rem max(1.75rem, env(safe-area-inset-bottom)); background: var(--canvas); overflow-wrap: anywhere; }
+.staff-brand { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.75rem; font-size: 1.25rem; font-weight: 700; margin-bottom: 1.75rem; }
+.staff-brand span { color: var(--muted); font-size: 0.875rem; font-weight: 400; }
+.staff-card { background: var(--card); border-radius: var(--radius-card); padding: 1.5rem 1rem; min-inline-size: 0; }
+.staff-card h1 { font-size: clamp(1.375rem, 1.125rem + 1vw, 1.75rem); line-height: 1.3; margin: 0 0 1rem; }
+.staff-card h2 { font-size: 1.125rem; margin: 1.75rem 0 1rem; }
+.staff-card .field input { font-size: 1rem; min-height: 3rem; border-color: #767676; }
+.staff-help, .staff-demo-link { display: block; margin-top: 1.5rem; font-size: 0.875rem; line-height: 1.6; }
 .staff-demo-link { text-decoration: underline; text-underline-offset: 4px; min-height: 48px; padding-block: 12px; }
 .staff-memberships { list-style: none; padding: 0; margin: 0 0 28px; }
 .staff-memberships li { padding: 16px 0; border-bottom: 1px solid var(--line); }
 .staff-memberships strong, .staff-memberships span { display: block; }
-.staff-memberships span { color: var(--muted); font-size: 14px; margin-top: 6px; }
+.staff-memberships span { color: var(--muted); font-size: 0.875rem; margin-top: 0.375rem; }
 .record-nav, .record-actions, .record-pagination { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 20px; align-items: center; }
 .record-nav a, .record-pagination a { display: inline-flex; min-height: 48px; align-items: center; padding: 10px 12px; text-decoration: underline; text-underline-offset: 4px; }
 .record-nav a[aria-current] { background: var(--ink); color: white; border-radius: var(--radius-pill); text-decoration: none; }
+.record-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.375rem; }
+.record-nav a { justify-content: center; padding-inline: 0.5rem; text-align: center; font-size: 0.875rem; }
+.record-actions .button { flex: 1 1 10rem; }
+.record-context { margin-block-end: 1rem; }
+.record-context strong, .record-context span { display: block; }
+.record-context span { color: var(--muted); font-size: 0.875rem; margin-block-start: 0.25rem; }
 .record-list { list-style: none; padding: 0; margin-block: 20px; display: grid; gap: 12px; }
 .record-list a { display: grid; gap: 6px; background: white; border-radius: var(--radius-control); padding: 20px; overflow-wrap: anywhere; }
-.record-list span { font-size: 14px; color: var(--muted); }
+.record-list span { font-size: 0.875rem; color: var(--muted); }
 .record-details { display: grid; gap: 16px; margin-block: 20px; overflow-wrap: anywhere; }
-.record-details dt, .record-conflict dt { color: var(--muted); font-size: 14px; }
+.record-details dt, .record-conflict dt { color: var(--muted); font-size: 0.875rem; }
 .record-details dd, .record-conflict dd { margin: 4px 0 0; }
 .record-conflict { display: block; overflow-wrap: anywhere; }
 .record-conflict dl { display: grid; gap: 12px; }
 .record-conflict a { text-decoration: underline; }
+.status-error-link { display: block; margin-block-start: 0.5rem; }
+.status-task-date { display: block; margin-block-start: 0.5rem; color: var(--muted); font-size: 0.875rem; }
+.status-history { list-style: none; padding: 0; display: grid; gap: 1rem; }
+.status-history li { background: var(--canvas); border-radius: var(--radius-control); padding: 1rem; overflow-wrap: anywhere; }
+.status-history p { margin-block-start: 0.375rem; }
 .record-form .form-errors { display: block; }
 .record-form .notice.error { background: var(--red-bg); color: var(--red); }
-.staff-card .field textarea { font-size: 16px; min-height: 144px; border-color: #767676; }
+.staff-card .field textarea { font-size: 1rem; min-height: 9rem; border-color: #767676; }
 .revision-instruction { white-space: pre-wrap; overflow-wrap: anywhere; }
 .revision-list { list-style: none; padding: 0; display: grid; gap: 16px; margin-block: 20px; }
 .revision-list > li { background: var(--canvas); border-radius: var(--radius-control); padding: 20px; }
@@ -79,6 +90,7 @@ body {
     Helvetica,
     sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
 }
 button,
 input,
@@ -135,6 +147,8 @@ h3 {
   font-weight: 600;
   line-height: 1.3;
   letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 h1 {
   font-size: 1.25rem;
@@ -205,6 +219,9 @@ textarea {
   font-weight: 500;
   text-align: center;
   line-height: 1.35;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
   transition:
     background var(--motion),
     transform var(--motion);
@@ -336,11 +353,16 @@ textarea {
   font-size: 1rem;
   font-weight: 600;
 }
+.profile-link > div {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
 .profile-subtitle {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.2rem;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: var(--muted);
   margin-block-start: 0.2rem;
 }
@@ -363,6 +385,7 @@ textarea {
 }
 .page-context {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -379,6 +402,7 @@ textarea {
 }
 .summary-top {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
@@ -391,7 +415,8 @@ textarea {
   border-radius: 999px;
   padding: 0.45rem 0.7rem;
   font-size: 0.7rem;
-  white-space: nowrap;
+  max-inline-size: 100%;
+  white-space: normal;
 }
 .summary-value {
   font-size: 2.5rem;
@@ -400,6 +425,7 @@ textarea {
   letter-spacing: -0.05em;
   margin-block: 0.6rem 0.4rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 0.6rem;
   font-variant-numeric: tabular-nums;
@@ -511,6 +537,7 @@ textarea {
 }
 .queue-heading {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   margin-block: 0.5rem 1.25rem;
@@ -593,7 +620,7 @@ textarea {
   gap: 0.5rem;
 }
 .card-reference {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: var(--muted);
   overflow-wrap: anywhere;
 }
@@ -605,7 +632,10 @@ textarea {
   font-size: 0.8125rem;
   padding: 0.4rem 0.7rem;
   border-radius: var(--radius-pill);
-  white-space: nowrap;
+  max-inline-size: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
   line-height: 1.25;
 }
 .status-badge.awaiting_reply {
@@ -769,6 +799,7 @@ textarea {
 }
 .page-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
   margin-block-end: 1rem;
@@ -776,6 +807,7 @@ textarea {
 }
 .page-header > div:not(.header-action) {
   min-inline-size: 0;
+  flex: 1 1 8rem;
 }
 .page-header h1 {
   font-size: 1.125rem;
@@ -786,6 +818,7 @@ textarea {
 }
 .header-action {
   margin-inline-start: auto;
+  max-inline-size: 100%;
 }
 .page-description {
   color: var(--muted);
@@ -903,6 +936,7 @@ dd {
 }
 .field label {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
@@ -948,7 +982,7 @@ dd {
   border-color: var(--red);
 }
 .field-hint {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -967,6 +1001,7 @@ dd {
   border-radius: var(--radius-control);
   font-size: 0.8125rem;
   margin-block-end: 1rem;
+  overflow-wrap: anywhere;
 }
 .form-errors a {
   display: block;
@@ -979,16 +1014,42 @@ dd {
   gap: 0.65rem;
 }
 .notice {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
+  display: block;
   padding: 1rem;
   border-radius: var(--radius-control);
   background: var(--panel);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: #4e5465;
   margin-block: 1rem;
   line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.notice.with-icon {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+.notice.with-icon > div {
+  min-inline-size: 0;
+}
+.notice > h2:first-child {
+  margin-block: 0 0.75rem;
+}
+.notice > p + p, .notice > dl + p {
+  margin-block-start: 0.75rem;
+}
+.notice > .button {
+  display: flex;
+  inline-size: 100%;
+  margin-block-start: 0.75rem;
+}
+.notice a:not(.button) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.notice.error {
+  color: var(--red);
+  background: var(--red-bg);
 }
 .notice > svg {
   margin-block-start: 0.15rem;
@@ -1074,6 +1135,14 @@ dd {
 .selected-contact > svg {
   margin-inline-start: auto;
 }
+p.selected-contact {
+  display: block;
+  overflow-wrap: anywhere;
+}
+p.selected-contact strong {
+  display: block;
+  margin-block-start: 0.25rem;
+}
 .status-hint {
   display: flex;
   align-items: center;
@@ -1145,6 +1214,17 @@ dd {
   display: block;
   font-size: 0.9375rem;
   margin-block-end: 0.35rem;
+}
+.contact-card-top > div,
+.selected-contact > div,
+.recipient-card > div,
+.task-editor-context > div,
+.assignee-card > div,
+.chat-demo-recipient > div,
+.radio-row > span,
+.checkbox-row > span {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
 }
 .completion-confirm {
   background: var(--green-bg);
@@ -1239,7 +1319,7 @@ dd {
 .case-step small {
   display: block;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   margin-block-start: 0.3rem;
 }
 .detail-main-action {
@@ -1375,7 +1455,7 @@ dd {
 .timeline-date span {
   display: block;
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   margin-block-start: 0.3rem;
 }
 .timeline-marker {
@@ -1389,18 +1469,18 @@ dd {
   margin-block-start: 0.2rem;
 }
 .timeline h3 {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 500;
 }
 .timeline p {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: #57575e;
   line-height: 1.6;
   margin-block: 0.3rem;
 }
 .timeline small {
   color: var(--muted);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
 }
 .inline-empty {
   background: var(--card);
@@ -1440,6 +1520,17 @@ dd {
 .draft-selection {
   margin-block-end: 1.5rem;
 }
+.draft-selection > .field-hint { margin-block: -0.5rem 0.5rem; }
+.draft-save-status { font-size: 0.875rem; color: var(--muted); }
+.draft-feedback:not(:empty) {
+  background: var(--panel);
+  border-radius: var(--radius-control);
+  padding: 1rem;
+  margin-block: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
 .draft-task-option {
   display: flex;
   align-items: flex-start;
@@ -1450,6 +1541,15 @@ dd {
   border-radius: 1.25rem;
   border: 1px solid transparent;
   cursor: pointer;
+  min-block-size: 3rem;
+}
+.draft-task-option > span {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.draft-task-option .revision-instruction {
+  display: block;
+  margin-block-end: 0.625rem;
 }
 .draft-task-option.selected {
   border-color: #99999d;
@@ -1614,6 +1714,9 @@ dialog.sheet {
   inline-size: 100%;
   max-inline-size: 32rem;
   max-block-size: 90dvh;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  scroll-padding-block: 1rem;
   padding: 1rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
   margin: auto auto 0;
   box-shadow: 0 -10px 50px #00000012;
@@ -1632,6 +1735,11 @@ dialog::backdrop {
   justify-content: space-between;
   gap: 0.75rem;
   margin-block-end: 1rem;
+  position: sticky;
+  inset-block-start: 0;
+  padding-block: 0.5rem;
+  background: var(--canvas);
+  z-index: 1;
 }
 .sheet-heading h2 {
   font-size: 1.2rem;
@@ -1726,6 +1834,8 @@ dialog::backdrop {
 .account-switcher button > span:nth-child(2),
 .team-list button > span:nth-child(2) {
   flex: 1;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
 }
 .account-switcher strong,
 .team-list strong {
@@ -1760,6 +1870,8 @@ dialog::backdrop {
 .settings-links > a > span,
 .settings-links > button > span {
   flex: 1;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
 }
 .settings-links small {
   display: block;
@@ -1786,7 +1898,7 @@ dialog::backdrop {
 .team-stats span {
   display: block;
   color: #c4c4c4;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   margin-block-start: 0.5rem;
 }
@@ -1971,6 +2083,7 @@ dialog::backdrop {
   }
 }
 @media (min-width: 44rem) {
+  .staff-card { padding: 1.75rem 1.25rem; }
   .main-content {
     padding-inline: 2rem;
   }
@@ -2180,6 +2293,10 @@ dialog::backdrop {
   }
 }
 @media (max-width: 22rem) {
+  .staff-area { padding-inline: 1.25rem; }
+  .summary-actions { grid-template-columns: minmax(0, 1fr); }
+  .info-list > div { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; }
+  .info-list dd { text-align: start; justify-content: flex-start; }
   .main-content {
     padding-inline: 1rem;
   }
@@ -2193,6 +2310,35 @@ dialog::backdrop {
   }
   .case-identity > .status-badge {
     margin-inline-start: 3.65rem;
+  }
+}
+@media (max-width: 18rem) {
+  .main-content {
+    padding-block-end: 2rem;
+  }
+  .home-header {
+    align-items: flex-start;
+  }
+  .profile-link {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .bottom-nav {
+    position: static;
+    transform: none;
+    margin: 1rem auto max(1rem, env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    inline-size: calc(100% - 2rem);
+    border-radius: 1.5rem;
+  }
+  .bottom-nav a {
+    min-inline-size: 0;
+    min-block-size: 3rem;
+    padding: 0.5rem;
+  }
+  .bottom-nav a.active span {
+    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {

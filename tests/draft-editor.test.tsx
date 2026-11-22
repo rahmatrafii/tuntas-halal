@@ -5,13 +5,54 @@ import {createElement} from "react";
 import {render,screen,waitFor,cleanup,fireEvent,act} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {DraftEditor} from "../src/features/drafts/editor";
-import {draftContext,taskId} from "./draft-fixture";
+import {draftContext,taskId,caseRow,taskRow,caseId} from "./draft-fixture";
+import {fixture,org,contact} from "./caseload-fixture";
+import {prepareDraft} from "../src/features/drafts/service";
 import {draftKey,newDraft} from "../src/features/drafts/storage";
 import type {DraftReply} from "../src/features/drafts/types";
 afterEach(()=>{cleanup();localStorage.clear();});
 Object.defineProperty(globalThis,"FormData",{configurable:true,value:dom.window.FormData});
 const props={context:draftContext,permalink:"/pesan",action:async():Promise<DraftReply>=>({status:"ready",context:draftContext})};
 const message=()=>screen.getByLabelText("Isi draf pesan WhatsApp") as HTMLTextAreaElement;
+
+test("long Unicode draft shows fallback, copies full text and survives reload without business writes",async()=>{
+  const f=fixture({rows:{cases:[caseRow],business_contacts:[contact],revision_tasks:[taskRow]}});
+  const action=async(_:DraftReply,body:FormData)=>prepareDraft(f.client,org,caseId,JSON.parse(String(body.get("draftRequest"))));
+  const user=userEvent.setup();let copied="";
+  Object.defineProperty(navigator,"clipboard",{configurable:true,value:{writeText:async(text:string)=>{copied=text;}}});
+  const longMessage=("Revisi ✅ & + #\nTerima kasih 🙏\n").repeat(300);
+  const view=render(createElement(DraftEditor,{...props,action}));
+  await waitFor(()=>assert(message()));fireEvent.change(message(),{target:{value:longMessage}});
+  await user.click(screen.getByRole("button",{name:"Buka WhatsApp"}));
+  await waitFor(()=>assert.match(screen.getByRole("status").textContent!,/terlalu panjang/));
+  assert(screen.getByRole("form",{name:"Lanjut ke WhatsApp"}));assert.equal(message().value,longMessage);
+  await user.click(screen.getByRole("button",{name:"Salin pesan"}));
+  await waitFor(()=>assert.equal(copied,longMessage));
+  assert(screen.getByRole("form",{name:"Lanjut ke WhatsApp"}));
+  view.unmount();render(createElement(DraftEditor,{...props,action}));
+  await waitFor(()=>assert.equal(message().value,longMessage));
+  assert.equal((screen.getByRole("checkbox") as HTMLInputElement).checked,true);
+  assert(!f.calls.some(c=>c.body));assert.equal(taskRow.status,"needs_sending");
+});
+test("failed copy revalidation removes the previous WhatsApp continuation",async()=>{
+  for(const transportFailure of [false,true]){
+    render(createElement(DraftEditor,{...props,action:async(_,body)=>{
+      if(JSON.parse(String(body.get("draftRequest"))).intent==="copy"){
+        if(transportFailure)throw Error("offline");
+        return {status:"invalid",notice:"Periksa draf"};
+      }
+      return {status:"ready",context:draftContext,url:"https://wa.me/6281200000101",longUrl:true};
+    }}));
+    const user=userEvent.setup();await waitFor(()=>assert(message()));
+    await user.click(screen.getByRole("button",{name:"Buka WhatsApp"}));
+    assert(await screen.findByRole("form",{name:"Lanjut ke WhatsApp"}));
+    await user.click(screen.getByRole("button",{name:"Salin pesan"}));
+    await waitFor(()=>assert(screen.getByRole("alert")));
+    assert.equal(screen.queryByRole("form",{name:"Lanjut ke WhatsApp"}),null);
+    cleanup();localStorage.clear();
+  }
+});
+
 test("draft reload restores edited message ahead of URL selection, including intentionally empty drafts",async()=>{
   const user=userEvent.setup();const first=render(createElement(DraftEditor,{...props,selectedId:taskId}));
   await waitFor(()=>assert(message()));await user.clear(message());await user.type(message(),"Suntingan pribadi\n& # 😀");

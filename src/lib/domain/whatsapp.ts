@@ -10,7 +10,8 @@ export function normalizeWhatsAppNumber(input: string): string | null {
 export function whatsappChatUrl(number: string, message: string): string | null {
   const normalized = normalizeWhatsAppNumber(number);
   if (!normalized || !message.trim()) return null;
-  return `https://wa.me/${normalized}?text=${encodeURIComponent(message)}`;
+  // Bypass the wa.me redirect, which can replace Unicode message characters.
+  return `https://api.whatsapp.com/send?phone=${normalized}&text=${encodeURIComponent(message)}`;
 }
 
 type DraftTask = { id: string; caseId: string; instruction: string };

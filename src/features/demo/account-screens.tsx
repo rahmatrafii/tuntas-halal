@@ -262,7 +262,7 @@ export function AccountScreen() {
           <Icon name="cases" />
           <span>
             Contoh kondisi layar
-            <small>Kosong, loading, error, dan akses terbatas</small>
+            <small>Kosong, memuat, gagal, dan akses terbatas</small>
           </span>
           <Icon name="chevron" size={17} />
         </Link>
@@ -481,8 +481,8 @@ export function ConditionsScreen() {
       <div className="filter-chips">
         {[
           { id: "empty", label: "Kosong" },
-          { id: "loading", label: "Loading" },
-          { id: "error", label: "Error" },
+          { id: "loading", label: "Memuat" },
+          { id: "error", label: "Gagal memuat" },
           { id: "restricted", label: "Akses terbatas" },
           { id: "conflict", label: "Konflik status" },
         ].map((entry) => (

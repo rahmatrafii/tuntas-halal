@@ -6,15 +6,20 @@ import {organizationPath} from "@/features/caseload/access";
 import {RecordFrame,Pagination} from "@/features/caseload/ui";
 import {listTasks} from "@/features/revisions/queries";
 import {statusLabels} from "@/lib/domain/revisions";
+import {allTasks,caseProgress,listHistory} from "@/features/status/queries";
+import {History} from "@/features/status/history";
 
-export default async function Page({params,searchParams}:{params:Promise<{organizationId:string;caseId:string}>;searchParams:Promise<{page?:string}>}) {
+export default async function Page({params,searchParams}:{params:Promise<{organizationId:string;caseId:string}>;searchParams:Promise<{page?:string;history?:string;hasil?:string}>}) {
   const {organizationId,caseId}=await params,{client,context}=await requireOrganization(organizationId);
   const item=await getCase(client,context,caseId);if(!item)notFound();
   const {count,error}=await client.from("revision_tasks").select("id",{count:"exact",head:true}).eq("case_id",item.id);
   if(error||count===null)throw serviceFailure();
   const tasks=await listTasks(client,context,item.id,(await searchParams).page);
+  const query=await searchParams,progress=caseProgress(await allTasks(client,context,item.id)),history=await listHistory(client,context,item.id,query.history);
   const base=organizationPath(organizationId),own=context.role==="companion"&&item.assignee_id===context.userId;
   return <RecordFrame context={context} title={item.business_contacts.business_name} section="kasus">
+    {query.hasil==="status"&&<p className="notice" role="status">Status revisi tersimpan.</p>}{query.hasil==="tetap"&&<p className="notice" role="status">Tidak ada perubahan status atau tanggal.</p>}
+    <p className="notice">{progress.completed}/{progress.total} revisi selesai. {progress.complete?"Kasus tuntas.":"Kasus belum tuntas."}</p>
     <dl className="record-details"><div><dt>Nomor pengajuan</dt><dd>{item.official_reference||"Belum tersedia"}</dd></div><div><dt>Penanggung jawab</dt><dd>{item.assignee_id===context.userId?"Anda":"Pendamping lain"}</dd></div><div><dt>Dibuat</dt><dd>{new Intl.DateTimeFormat("id-ID",{dateStyle:"medium",timeZone:context.timezone}).format(new Date(item.created_at))}</dd></div></dl>
     <div className="record-actions"><Link className="button outline" href={`${base}/kontak/${item.contact_id}`}>Lihat kontak</Link>{own&&<Link className="button primary" href={`${base}/kasus/${item.id}/edit`}>Ubah nomor pengajuan</Link>}</div>
     <h2>Revisi kasus</h2>
@@ -28,10 +33,13 @@ export default async function Page({params,searchParams}:{params:Promise<{organi
           <p className="revision-instruction">{task.instruction}</p>
           {task.follow_up_on&&<p>Tindak lanjut: <time dateTime={task.follow_up_on}>{task.follow_up_on}</time></p>}
           {own&&<Link className="button outline" href={`${base}/kasus/${item.id}/revisi/${task.id}/edit`}>Ubah instruksi</Link>}
+          {own&&<Link className="button primary" href={`${base}/kasus/${item.id}/revisi/${task.id}/status`}>Perbarui status</Link>}
           {own&&task.status!=="completed"&&<Link className="button text" href={`${base}/kasus/${item.id}/pesan?pilih=${task.id}`}>Siapkan pesan revisi ini</Link>}
         </li>)}
       </ul>}
       <Pagination page={tasks} path={`${base}/kasus/${item.id}`}/>
     </>}
+    <h2>Riwayat perubahan</h2>{history.items.length?<History items={history.items} userId={context.userId} timezone={context.timezone}/>:<p className="notice">Belum ada riwayat perubahan.</p>}
+    {(history.page>1||history.hasNext)&&<nav className="record-pagination" aria-label="Halaman riwayat">{history.page>1&&<Link href={`${base}/kasus/${item.id}?page=${tasks.page}&history=${history.page-1}`}>Riwayat sebelumnya</Link>}<span>Halaman {history.page}</span>{history.hasNext&&<Link href={`${base}/kasus/${item.id}?page=${tasks.page}&history=${history.page+1}`}>Riwayat berikutnya</Link>}</nav>}
   </RecordFrame>;
 }

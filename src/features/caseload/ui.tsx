@@ -7,7 +7,7 @@ import type {CaseRecord,Page} from "./queries";
 export function RecordFrame({context,title,section,children}:{context:ActiveOrganization;title:string;section:"kontak"|"kasus";children:ReactNode}) {
   const base=organizationPath(context.organizationId);
   return <StaffFrame title={title}>
-    <p className="page-description">{context.name} · {context.role==="companion"?"Pendamping PPH":"Koordinator LP3H"}</p>
+    <p className="record-context"><strong>{context.name}</strong><span>{context.role==="companion"?"Pendamping PPH":"Koordinator LP3H"}</span></p>
     <nav className="record-nav" aria-label="Navigasi lembaga">
       <Link href={`${base}/kontak`} aria-current={section==="kontak"?"page":undefined}>Kontak</Link>
       <Link href={`${base}/kasus`} aria-current={section==="kasus"?"page":undefined}>Kasus</Link>

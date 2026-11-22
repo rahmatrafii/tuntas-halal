@@ -65,6 +65,8 @@ Perubahan URL dari client tidak boleh melewati pemeriksaan akses. Alur panel des
 
 ## Keputusan teknis
 
+F06 menambah `src/features/status` untuk status/tanggal per revisi, konfirmasi pengiriman batch, progres seluruh tugas, dan riwayat kasus. Semua operasi melalui client pengguna/RLS dan `set_task_statuses`, tanpa schema baru. Form review membawa versi terbaru lewat submitter native maupun hydrated; pemulihan receipt tidak bergantung status saat ini. Lihat [panduan status staf](STAFF_STATUS.md). UI nyata F07/F08 dan pengujian F06 cloud/perangkat tetap terpisah.
+
 - App Router dan TypeScript strict; jangan membangun API HTTP tambahan jika Server Action cukup.
 - Supabase `@supabase/ssr` untuk cookie; `getClaims()` memverifikasi identitas. Jangan pakai `getSession()` sebagai bukti otorisasi.
 - Jangan cache data staf lintas pengguna. Next Cache Components belum diaktifkan pada fondasi.

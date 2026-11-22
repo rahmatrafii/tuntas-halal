@@ -202,11 +202,56 @@ Pengguna meminta akun dan kasus uji untuk HP. Satu akun pendamping `f05-hp-d979b
 - `npm run build` dan `npm run skills:verify` lulus; 29 skill terverifikasi. Pemeriksaan diff, pola kredensial dan kecocokan nilai key/token environment lokal tidak menemukan masalah. `.env.local`, metadata Supabase lokal dan runner di `.git` tidak disertakan.
 - Tidak mengulang suite database/HTTP integrasi, uji cloud atau perangkat pada sesi push ini. Fixture HP F05 tetap dipertahankan; F05V/UI02 dan F06–F09 tetap terbuka.
 
+## Uji dasar HP F05 — 22 November 2026
+
+Pengguna mengonfirmasi tujuh pemeriksaan Chrome Android berhasil: isi draf dan pilihan dua revisi bertahan setelah reload, salin-tempel ke Catatan berhasil, penerima WhatsApp benar, teks WhatsApp lengkap, draf bertahan setelah kembali/reload, dan kedua status tetap Perlu dikirim. Ini bukti laporan pengguna untuk skenario dasar, bukan observasi langsung agent. Lihat [F05_HP_TEST.md](F05_HP_TEST.md). Fixture tetap aktif; tidak ada cleanup atau perubahan kode. Pesan panjang/karakter khusus, clipboard laptop dan review visual UI02 masih perlu diuji; F05V belum ditutup seluruhnya.
+
+## Koreksi tautan emoji WhatsApp laptop — 22 November 2026
+
+- Laporan pengguna membuktikan emoji pada draf dan Salin–Tempel laptop benar, tetapi Buka WhatsApp merusaknya di halaman perantara serta aplikasi desktop/Web. Uji tambahan Android untuk karakter khusus/emoji, pesan panjang terisi dan reload dilaporkan berhasil; fallback batas tautan belum terpicu.
+- Probe HTTP memakai nomor fiktif mereproduksi wa.me 302 yang mengganti emoji menjadi U+FFFD. Helper bersama kini menuju endpoint API langsung; probe tautan baru mengonfirmasi parameter pesan dan tautan lanjutan Web mempertahankan emoji. Tidak ada perubahan akses/status/draf tersimpan atau dependency.
+- Tes regresi domain RED→GREEN, `npm run check` lulus lint/TypeScript/93 tes dan `npm run build` lulus. Percobaan check pertama dihentikan pada worker tes form staf yang tersendat; suite tersebut lulus sendiri dan pengulangan check penuh lulus tanpa perubahan kode tes staf. Peringatan React/jsdom `<search>` tetap muncul. Diff diperiksa; tidak menjalankan ulang integrasi database/cloud atau mengirim pesan. Fixture HP tetap aktif.
+- Pengguna kemudian mengonfirmasi uji ulang Buka WhatsApp laptop berhasil; temuan emoji teratasi menurut laporan pengguna, tanpa rincian desktop/Web terpisah atau uji ulang Android sesudah perubahan. Fallback pesan melampaui batas tautan dan UI02 tetap terbuka; lihat [hasil perangkat](F05_HP_TEST.md).
+
+## F05 — Verifikasi otomatis fallback panjang, 22 November 2026
+
+Atas permintaan pengguna, dua tes tambahan membuktikan batas URL terenkode 8.000/8.001 karakter serta alur editor dengan service nyata/transport fixture: pemberitahuan fallback, pesan Unicode disalin utuh ke stub clipboard, draf/pilihan pulih saat editor dimuat ulang, tanpa request tulis bisnis atau perubahan status. Suite terarah 17 tes lulus; `npm run check` lulus lint/TypeScript/95 tes dan `npm run build` lulus. Kode aplikasi tidak berubah pada sesi pengujian ini. Tidak ada fixture cloud tambahan, pesan dikirim atau cleanup. Clipboard OS dan navigasi WhatsApp/HP nyata tidak dibuktikan oleh jsdom; F05V/UI02 tetap terbuka. Lihat [laporan perangkat](F05_HP_TEST.md).
+
+## UI02A — Audit sumber keterbacaan mobile, 22 November 2026
+
+Pengguna mendelegasikan audit/perbaikan teks/info/modal lintas halaman. Audit komponen bersama dan sumber demo/staf menemukan notice flex yang mengalahkan panel konflik block, instruksi/badge menempel, risiko long text, modal tinggi, metadata kecil dan copy staf usang. Perbaikan mempertahankan desain monokrom referensi, data, akses dan perilaku bisnis. Diagnostic cascade sebelum/sesudah, check lint/TypeScript/95 tes, build dan review sumber independen lulus. Smoke HTTP publik 11 route 200 dan dua route staf tanpa sesi 307; bukan bukti halaman bisnis bersesi atau rendering mobile.
+
+Browser inventory tetap kosong dengan `The browser access host is unavailable`. UI02 belum lulus visual/perangkat/zoom/keyboard. Fixture HP tetap aktif; tidak ada operasi cloud, email/WhatsApp, commit/push atau deploy. [Laporan dan cakupan lengkap](MOBILE_READABILITY_AUDIT.md); rancangan/rencana di `docs/superpowers`. Perubahan emoji/fallback dari sesi sebelumnya dipertahankan.
+
+## UI02B/F05V — Pengujian Android langsung, 22 November 2026
+
+Pengguna menyediakan jendela scrcpy interaktif; agent menguji HP melalui CUA dengan sesi fixture aktif. Form kontak/kasus/revisi, keyboard angka/teks, validasi instruksi kosong/fokus/batal, daftar/detail, draf/reload, modal filter/Escape, navigasi dan antrean diperiksa pada perangkat. Tidak mengubah data bisnis; instruksi kosong ditolak, form dibatalkan, dua revisi tetap Perlu dikirim.
+
+Fallback pesan panjang nyata dan ekspor pendek beremoji bekerja setelah perbaikan bug continuation: tombol Lanjut ke WhatsApp semula hilang saat Salin, regresi diamati RED→GREEN. Salin clipboard HP → chat tanpa teks → tempel memperlihatkan penanda awal/akhir/emoji; tidak menekan Kirim. Isian WhatsApp uji dikosongkan dan draf aplikasi dikembalikan ke paragraf contoh pendek. Fixture tetap aktif. Zoom Chrome 200% menemukan header/nav overflow, diperbaiki dengan wrapping dan navigasi grid dalam alur pada layar sangat sempit; hasil HP diperiksa lalu zoom dikembalikan 100%. Review sumber independen tidak menemukan masalah penting.
+
+Validasi akhir: `npm run check` lulus lint/TypeScript/96 tes dan `npm run build` lulus. Satu check tersendat pada worker form login; tes tersebut lulus sendiri lalu pengulangan check penuh lulus. Review tambahan tidak menemukan masalah penting. Belum seluruh route/keadaan diuji di semua ukuran/orientasi/perangkat; UI02 tetap terbuka. Bukti dan batas ada di [audit mobile](MOBILE_READABILITY_AUDIT.md) dan [uji HP](F05_HP_TEST.md). Tidak ada fixture cloud tambahan, pesan/email dikirim, schema/config Auth berubah, commit/push/deploy.
+
+## F06 — Status, tindak lanjut dan riwayat lokal, 22 November 2026
+
+- Pengguna menyetujui [rancangan](superpowers/specs/2026-11-22-f06-status-follow-up-design.md) dan implementasi status per revisi + konfirmasi beberapa revisi sesudah pengiriman. [Rencana](superpowers/plans/2026-11-22-f06-status-follow-up.md) dijalankan inline pada checkout fitur yang sama; perubahan F05/UI sebelumnya dipertahankan.
+- Area staf menambah form status/tanggal, checkbox kirim/selesai, koreksi tahap sebelumnya, form Catat pengiriman terpisah dari draf (maks100, kebijakan tanggal bersama eksplisit), progres seluruh tugas dan riwayat20/halaman. Native menampilkan seluruh kandidat, hydrated20/halaman dengan pilihan lintas halaman. Tidak menulis instruksi melalui status RPC atau menyalin isi pesan ke audit.
+- Mutasi memakai `set_task_statuses` F01 dan client pengguna/RLS: membership/LP3H/peran/assignee, input server, requestId deterministic, expected version dan receipt. Tanpa schema/dependency baru. No-op tidak memanggil RPC. Pending mengunci snapshot; gagal simpan mempertahankan isian. Konflik butuh penerapan eksplisit dan tidak membocorkan data di luar akses.
+- TDD service/form/native dimulai RED lalu GREEN. Review independen menemukan native reviewed versions yang belum diproses server, submit manual disabled, kandidat setelah20 tersembunyi tanpa JS, serta completion guard yang menghalangi receipt setelah reopen. Keempatnya diperbaiki dengan regresi RED→GREEN; tidak ada minor terpisah yang ditunda. Keputusan native-all dicatat dalam spec/ledger. Inline error/focus juga diregresikan RED→GREEN.
+- `npm run check` lulus lint, TypeScript dan **109/109 tes**. Satu percobaan suite paralel worker staff-forms gagal/terhenti saat mesin memuat Docker; pengulangan penuh terakhir lulus tanpa perubahan form Auth. Peringatan React/jsdom `<search>` lama tetap muncul. `npm run build` lulus, termasuk route status dan pengiriman.
+- `npm run db:test` lulus **128 assertion SQL** dan skenario concurrency/receipt/batch/tenant/transfer. HTTP `npm run db:caseload:test` lokal lulus setelah penambahan F06: status/tanggal/konfirmasi, no-op tanpa audit, retry respons hilang, completion date-only receipt setelah reopen, konflik dua sesi sampai native apply, partial send/reply, stale batch rollback, koordinator/parent isolation, progress tuntas/buka kembali dan pagination riwayat. Fixture lokal fiktif; wrapper menolak endpoint cloud. Docker Desktop yang sudah terpasang dijalankan untuk stack lokal; tidak mereset cloud.
+- Tidak ada migrasi/config cloud, fixture/undangan/email baru, pesan WhatsApp, cleanup fixture HP, commit/push/deploy. Bukti lokal tidak menggantikan uji bisnis F06 cloud atau perangkat. F07/F08 dan sisa UI02 tetap terpisah. [Panduan staf](STAFF_STATUS.md).
+
+## F06C — Verifikasi bisnis cloud, 22 November 2026
+
+- Atas permintaan pengguna, native HTTP aplikasi localhost dengan sesi Auth/database `tuntas-halal-dev` lulus uji F06: status/tanggal/konfirmasi, koreksi/progres, partial send/reply, retry/receipt tanpa audit ganda, no-op, konflik/tinjauan eksplisit, batch rollback, tenant/peran/parent, transfer/revocation dan pagination. Tidak memerlukan migrasi baru; enam migrasi cloud tetap tersedia.
+- Run `740f9aae-9cf2-4e92-9d61-9a557baf96f8` memakai dua LP3H/empat akun sementara. Cleanup/readback terpisah menunjukkan nol LP3H/membership/kontak/kasus/tugas/audit/receipt/Auth run ini. Guard audit aktif dan RLS enam tabel tetap aktif. Fixture HP lama dipertahankan; fingerprint tugas sebelum/sesudah sama, keberadaan 1 LP3H/1 kasus/2 revisi terverifikasi. Nomor pribadi tidak dibaca/dicatat.
+- Tanpa email/WhatsApp, perubahan kode aplikasi/schema/config, deploy atau commit/push. Check/build tidak diulang pada sesi operasional ini. F06 perangkat/HP dan sisa UI02 tetap terbuka. [Laporan](F06_CLOUD_VERIFICATION.md). Izin fixture sementara run ini selesai.
+
 ## Batas tahap ini
 
 Pemilihan skill otomatis kini diwajibkan di `AGENTS.md`: agent membaca dan mengikuti skill yang relevan sebelum coding/development, menilai ulang saat tahap berubah, dan menyebutkan tujuannya tanpa menunggu pengguna menamai skill. Panduan lintas sesi ada di `SKILLS.md`; berlaku pada repository ini, tanpa perubahan konfigurasi global. Perubahan ini hanya dokumentasi/instruksi; path skill dan diff diperiksa, check/build aplikasi tidak diulang.
 
-Route demo bisnis tetap data contoh; area staf mempunyai sesi/membership, kontak/kasus F03, revisi F04 dan draf F05 yang diuji lokal serta skenario cloud F03C/F05C. Migrasi F04 sudah diterapkan ke cloud. Status/antrean/transfer UI F06–F08, perangkat F05V/UI02 dan gerbang pilot F09 belum selesai. Simulasi role browser tidak mengotorisasi data nyata. Jangan memasukkan data pribadi/pilot sebelum gerbang akses dan operasional sesuai.
+Route demo bisnis tetap data contoh; area staf mempunyai sesi/membership, kontak/kasus F03, revisi F04 dan draf F05 yang diuji lokal serta skenario cloud F03C/F05C. Migrasi F04 sudah diterapkan ke cloud. F06 sudah diimplementasikan lokal dan diverifikasi melalui sesi/database cloud; uji HP F06, antrean F07, transfer UI F08, sisa UI02 dan gerbang pilot F09 belum selesai. Simulasi role browser tidak mengotorisasi data nyata. Jangan memasukkan data pribadi/pilot sebelum gerbang akses dan operasional sesuai.
 
 Project Supabase development dibuat oleh pengguna. Satu email login fiktif dikirim ke Mailtrap atas izin khusus; akun sementara sudah dihapus. Belum ada deployment aplikasi, undangan staf nyata, email ke inbox nyata, atau pesan WhatsApp. Repository GitHub project: `https://github.com/rahmatrafii/tuntas-halal`, branch utama `main`. Commit awal mencakup frontend dummy, dokumentasi, dan skill project; file environment lokal, dependency terpasang, serta hasil build dikecualikan dari Git.
 
@@ -214,6 +259,6 @@ Project Supabase development dibuat oleh pengguna. Satu email login fiktif dikir
 
 1. Coba alur melalui `FRONTEND_DEMO.md`; mulai dari `/` atau `/login`.
 2. Selesaikan UI02 saat akses browser/perangkat sah tersedia: screenshot 375px/390px, tablet/desktop, zoom 200%, keyboard, native modal, dan review kesesuaian referensi.
-3. F05 lokal dan sesi cloud F05C selesai; lihat STAFF_DRAFTS.md/F05_CLOUD_VERIFICATION.md. Pengguna memilih cloud dahulu; F05V/UI02 menunggu uji terpandu di perangkat dan akses browser yang sah. Fitur berikutnya F06 — status/audit/tindak lanjut — melalui rancangan tersendiri; jangan menggabungkan F06–F08. Fixture/undangan cloud tambahan tetap memerlukan instruksi pengguna; suite `db:*` tetap lokal.
+3. F05 lokal dan sesi cloud F05C selesai; lihat STAFF_DRAFTS.md/F05_CLOUD_VERIFICATION.md. F06 lokal dan cloud telah diverifikasi; lanjutkan uji HP F06 atau task F07 tersendiri sesuai instruksi pengguna. Sisa UI02 tetap memerlukan akses browser/perangkat. Fixture/undangan cloud tambahan tetap memerlukan instruksi pengguna; suite `db:*` tetap lokal.
 
 Keputusan pilot tetap terbuka: LP3H nyata, zona waktu final, retensi, hosting, dan harga. Spesifikasi produk tetap bersumber dari PRD; sistem desain aktif dari `DESIGN_SYSTEM.md`.

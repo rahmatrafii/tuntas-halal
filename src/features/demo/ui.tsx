@@ -182,6 +182,7 @@ function DemoShell({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-label={item.label}
                 aria-current={active ? "page" : undefined}
                 className={active ? "active" : ""}
               >
@@ -415,7 +416,7 @@ export function StateView({
           ? "Kasus ini ditangani pendamping lain. Hubungi koordinator jika Anda perlu menjadi penanggung jawab."
           : conflict
             ? "Ada perubahan dari sesi lain. Muat status terbaru sebelum melanjutkan agar perubahan tidak tertimpa."
-            : "Ada gangguan saat memuat data. Catatan Anda tetap tersimpan. Silakan coba lagi."}
+            : "Ada gangguan saat memuat data. Silakan coba lagi."}
       </p>
       {!restricted && onRetry ? (
         <button className="button primary" onClick={onRetry}>
@@ -481,7 +482,7 @@ export function Notice({
 }) {
   return (
     <div
-      className={`notice ${error ? "error-notice" : ""}`}
+      className={`notice with-icon ${error ? "error-notice" : ""}`}
       role={error ? "alert" : "status"}
     >
       <Icon name={error ? "alert" : "shield"} size={18} />

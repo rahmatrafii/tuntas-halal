@@ -89,14 +89,14 @@ export function RecordForm({kind,mode,initial,action,basePath,permalink,cancelHr
       <label className="checkbox-row"><input type="checkbox" name="confirmDuplicate" checked={confirmed} onChange={event=>setConfirmed(event.target.checked)} disabled={pending}/><span>Ini usaha berbeda yang memakai nomor yang sama.</span></label>
     </section>}
     {conflict&&<section className="notice record-conflict" aria-label="Data terbaru">
-      <h2>Data terbaru · versi {state.latest!.version}</h2>
+      <h2>Data terbaru</h2>
       <dl>{Object.entries(state.latest!.values).filter(([key])=>key!=="contactId").map(([key,value])=><div key={key}><dt>{labels[key]??key}</dt><dd>{value||"Belum diisi"}</dd></div>)}</dl>
       <p>{state.message}</p>
       {state.savedId&&<Link href={`${basePath}/${kind==="contact"?"kontak":"kasus"}/${state.savedId}`}>Buka data yang sudah tersimpan</Link>}
     </section>}
     {state.message&&["error","forbidden"].includes(state.status)&&<p className="notice error" role="alert">{state.message}</p>}
     <div className="form-actions">
-      {conflict?mode==="update"&&<button id="record-submit" className="button primary full" name="reviewVersion" value={state.latest!.version} type="submit" disabled={pending}>Terapkan isian saya ke versi terbaru</button>
+      {conflict?mode==="update"&&<button id="record-submit" className="button primary full" name="reviewVersion" value={state.latest!.version} type="submit" disabled={pending}>Terapkan isian saya</button>
         :<button id="record-submit" className="button primary full" type="submit" disabled={pending||state.status==="forbidden"}>{pending?"Menyimpan…":label}</button>}
       <Link className="button text full" href={cancelHref}>Batal</Link>
     </div>

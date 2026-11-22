@@ -37,7 +37,7 @@ export function TaskForm({mode,initial,businessName,permalink,cancelHref,status,
   const conflict=state.status==="conflict"&&state.latest;
   return <form action={submit} onSubmit={hydratedSubmit} noValidate aria-label="Simpan tugas revisi" aria-busy={pending} className="record-form">
     <p className="selected-contact">Usaha: <strong>{businessName}</strong></p>
-    {status&&<p>Status: {statusLabels[status]}. Mengubah instruksi tidak mengubah status atau tanggal tindak lanjut.</p>}
+    {status&&<p className="notice">Status: {statusLabels[status]}. Mengubah instruksi tidak mengubah status atau tanggal tindak lanjut.</p>}
     <p className="sr-only" role="status" aria-live="polite">{conflict?"Data sudah berubah. Tinjau data terbaru sebelum melanjutkan.":""}</p>
     <input type="hidden" name="resourceId" value={state.resourceId}/>
     <input type="hidden" name="intentSeed" value={state.intentSeed}/>
@@ -54,7 +54,7 @@ export function TaskForm({mode,initial,businessName,permalink,cancelHref,status,
       {instructionError&&<p id="instruction-error" className="field-error">{instructionError}</p>}
     </div>
     {conflict&&<section className="notice record-conflict" aria-label="Data terbaru">
-      <h2>Data terbaru · versi {state.latest!.version}</h2>
+      <h2>Data terbaru</h2>
       <dl><div><dt>Instruksi</dt><dd className="revision-instruction">{state.latest!.values.instruction}</dd></div>
         <div><dt>Status</dt><dd>{statusLabels[state.latest!.values.status as RevisionStatus]}</dd></div>
         <div><dt>Tindak lanjut</dt><dd>{state.latest!.values.followUpOn||"Belum ditentukan"}</dd></div></dl>
@@ -63,7 +63,7 @@ export function TaskForm({mode,initial,businessName,permalink,cancelHref,status,
     </section>}
     {state.message&&["error","forbidden"].includes(state.status)&&<p className="notice error" role="alert">{state.message}</p>}
     <div className="form-actions">
-      {conflict&&!state.savedId?<button id="task-submit" className="button primary full" name="reviewVersion" value={state.latest!.version} type="submit" disabled={pending}>Terapkan isian saya ke versi terbaru</button>
+    {conflict&&!state.savedId?<button id="task-submit" className="button primary full" name="reviewVersion" value={state.latest!.version} type="submit" disabled={pending}>Terapkan isian saya</button>
         :<button id="task-submit" className="button primary full" type="submit" disabled={pending||state.status==="forbidden"||Boolean(state.savedId)}>{pending?"Menyimpan…":mode==="create"?"Simpan revisi":"Simpan perubahan"}</button>}
       <Link className="button text full" href={cancelHref}>Batal</Link>
     </div>
