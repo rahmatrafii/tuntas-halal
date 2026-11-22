@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  distDir: process.env.SIHALAL_AUTH_TEST === "1" ? ".next-auth-test" : ".next",
+  logging: {
+    incomingRequests: {ignore: [/\/auth\/confirm(?:\?|$)/]},
+    serverFunctions: false,
+  },
   turbopack: {
     root: process.cwd(),
     rules: {

@@ -12,6 +12,12 @@
 | [Backlog](BACKLOG.md)                       | Irisan implementasi dan definisi selesai                            |
 | [Pengujian](TESTING.md)                     | Pemetaan acceptance PRD ke pemeriksaan                              |
 | [Setup Supabase](SUPABASE.md)               | Persiapan backend dan autentikasi                                   |
+| [Login dan sesi staf](STAFF_AUTH.md)        | F02, provisioning, pengujian lokal, batas SMTP/template cloud        |
+| [Kontak, kasus dan revisi staf](STAFF_CASELOAD.md)  | F03/F04 lokal, konteks LP3H, akses, retry/konflik dan batas cloud |
+| [Draf WhatsApp staf](STAFF_DRAFTS.md) | F05 lokal, penyimpanan per akun, peninjauan, ekspor dan batas perangkat |
+| [Verifikasi cloud/browser F03](F03_CLOUD_VERIFICATION.md) | Hasil uji bisnis cloud, cleanup fixture dan hambatan UI02 |
+| [Verifikasi migrasi cloud F04](F04_CLOUD_VERIFICATION.md) | Target, migrasi 006, grants/RLS/audit dan batas bukti tanpa fixture |
+| [Verifikasi sesi cloud F05](F05_CLOUD_VERIFICATION.md) | HTTP cloud, ekspor read-only, cleanup dan uji HP yang masih terbuka |
 | [Keputusan](DECISIONS.md)                   | Keputusan yang diambil dan yang masih terbuka                       |
 | [Vibe coding](VIBE_CODING.md)               | Konteks awal, workflow, prompt, handoff                             |
 | [Skill project](SKILLS.md)                  | Skill tersedia, sumber, cara pakai dan sinkronisasi                 |

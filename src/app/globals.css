@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+.staff-area { max-width: 640px; margin: 0 auto; padding: max(28px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom)); }
+.staff-brand { display: flex; align-items: baseline; gap: 12px; font-size: 20px; font-weight: 700; margin-bottom: 28px; }
+.staff-brand span { color: var(--muted); font-size: 14px; font-weight: 400; }
+.staff-card { background: var(--card); border-radius: var(--radius-card); padding: 28px 20px; }
+.staff-card h1 { font-size: 28px; line-height: 1.2; margin: 0 0 16px; }
+.staff-card h2 { font-size: 18px; margin: 28px 0 16px; }
+.staff-card .field input { font-size: 16px; min-height: 48px; border-color: #767676; }
+.staff-help, .staff-demo-link { display: block; margin-top: 24px; font-size: 14px; line-height: 1.6; }
+.staff-demo-link { text-decoration: underline; text-underline-offset: 4px; min-height: 48px; padding-block: 12px; }
+.staff-memberships { list-style: none; padding: 0; margin: 0 0 28px; }
+.staff-memberships li { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.staff-memberships strong, .staff-memberships span { display: block; }
+.staff-memberships span { color: var(--muted); font-size: 14px; margin-top: 6px; }
+.record-nav, .record-actions, .record-pagination { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 20px; align-items: center; }
+.record-nav a, .record-pagination a { display: inline-flex; min-height: 48px; align-items: center; padding: 10px 12px; text-decoration: underline; text-underline-offset: 4px; }
+.record-nav a[aria-current] { background: var(--ink); color: white; border-radius: var(--radius-pill); text-decoration: none; }
+.record-list { list-style: none; padding: 0; margin-block: 20px; display: grid; gap: 12px; }
+.record-list a { display: grid; gap: 6px; background: white; border-radius: var(--radius-control); padding: 20px; overflow-wrap: anywhere; }
+.record-list span { font-size: 14px; color: var(--muted); }
+.record-details { display: grid; gap: 16px; margin-block: 20px; overflow-wrap: anywhere; }
+.record-details dt, .record-conflict dt { color: var(--muted); font-size: 14px; }
+.record-details dd, .record-conflict dd { margin: 4px 0 0; }
+.record-conflict { display: block; overflow-wrap: anywhere; }
+.record-conflict dl { display: grid; gap: 12px; }
+.record-conflict a { text-decoration: underline; }
+.record-form .form-errors { display: block; }
+.record-form .notice.error { background: var(--red-bg); color: var(--red); }
+.staff-card .field textarea { font-size: 16px; min-height: 144px; border-color: #767676; }
+.revision-instruction { white-space: pre-wrap; overflow-wrap: anywhere; }
+.revision-list { list-style: none; padding: 0; display: grid; gap: 16px; margin-block: 20px; }
+.revision-list > li { background: var(--canvas); border-radius: var(--radius-control); padding: 20px; }
+.revision-list .button { margin-top: 12px; }
+
 :root {
   color-scheme: light;
   --canvas: #fff;

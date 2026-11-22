@@ -37,6 +37,10 @@ Untuk memilih file secara eksplisit, rujuk `.agents/skills/systematic-debugging/
 
 ## Pemakaian lintas sesi
 
+Pemilihan skill otomatis diwajibkan oleh [AGENTS.md](../AGENTS.md) untuk setiap pekerjaan coding/development pada repository ini. Pengguna cukup menyampaikan hasil yang diinginkan; tidak perlu menulis `Gunakan skill ...`. Agent membaca skill yang relevan sebelum bekerja, menyebutkan pilihan dan tujuannya singkat, serta menilai ulang saat tahap berubah. Contoh prompt eksplisit di dokumen ini tetap boleh dipakai untuk mengarahkan workflow tertentu.
+
+Pilih seperlunya: debugging untuk bug, brainstorming/perencanaan untuk fitur baru, pengujian untuk implementasi, panduan frontend untuk UI, dan verifikasi sebelum klaim selesai. Jangan menjalankan seluruh paket untuk setiap tugas. Aturan ini berlaku pada project ini dan agent yang membaca instruksinya; tidak memasang pengaturan global bagi semua project atau aplikasi AI lain.
+
 Skill repository berada di `.agents/skills/<nama>/SKILL.md`. Agent yang mendukung discovery direktori ini dapat memuatnya pada sesi berikutnya. Untuk tool lain, rujuk file secara eksplisit dari prompt/AGENTS.md; penyalinan ini tidak memasang plugin atau hook ke aplikasi tersebut.
 
 ```text

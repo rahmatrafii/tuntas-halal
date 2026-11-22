@@ -164,6 +164,7 @@ export function LoginScreen() {
         <p className="login-footnote">
           Data contoh tersimpan di browser. Belum terhubung ke autentikasi atau
           layanan email.
+          {" "}<Link href="/staf/login">Masuk ke area staf dengan akun lembaga.</Link>
         </p>
       </section>
     </div>

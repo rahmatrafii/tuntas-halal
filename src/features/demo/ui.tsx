@@ -93,6 +93,12 @@ export function Avatar({ id, size = "" }: { id: string; size?: string }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  if (pathname === "/staf" || pathname.startsWith("/staf/") || pathname.startsWith("/auth/")) return children;
+  return <DemoShell>{children}</DemoShell>;
+}
+
+function DemoShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const state = useDemo();
   const ready = useDemoReady();
   const login = pathname === "/login";

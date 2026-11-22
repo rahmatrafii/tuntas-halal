@@ -13,6 +13,12 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "tsx --test tests/*.test.ts tests/*.test.tsx",
     "check": "npm run lint && npm run typecheck && npm test",
+    "db:start": "node scripts/database.mjs start",
+    "db:reset": "node scripts/database.mjs reset",
+    "db:test": "node scripts/database.mjs test",
+    "db:auth:test": "node scripts/database.mjs auth-test",
+    "db:caseload:test": "node scripts/database.mjs caseload-test",
+    "db:types": "node scripts/database.mjs types",
     "skills:sync": "node scripts/sync-skills.mjs",
     "skills:verify": "node scripts/verify-skills.mjs"
   },
@@ -36,6 +42,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "16.4.6",
     "jsdom": "^31.0.1",
+    "supabase": "3.2.0",
     "tailwindcss": "4.3.3",
     "tsx": "^4.23.15",
     "typescript": "^5"
