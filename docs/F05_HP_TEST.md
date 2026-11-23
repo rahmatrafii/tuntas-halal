@@ -77,6 +77,8 @@ F05V Android kini memiliki bukti langsung untuk jalur pendek/panjang, keyboard, 
 
 ## Handoff dan cleanup
 
+**Pembaruan 23 November 2026:** fixture dipakai untuk uji F06 yang diminta pengguna. Keadaan akhir A (foto label) Perlu dicek dan B (komposisi) Selesai, keduanya bertanggal 2026-11-30; kasus 1/2 selesai. Riwayat uji dipertahankan. Status awal dua Perlu dikirim pada bagian sebelumnya adalah keadaan provisioning. Lihat [hasil F06 HP](F06_HP_TEST.md), termasuk temuan feedback koneksi yang masih terbuka. Jangan menghapus atau mereset fixture.
+
 Fixture ini sengaja belum dihapus. Jangan menganggap baseline cloud tetap nol seperti akhir F05C, jangan reset database, dan jangan menjalankan ulang smoke test yang mensyaratkan baseline kosong selama fixture manual aktif.
 
 Manifest: `.git/f05-hp-manifest-d979baca-9065-45fd-adb5-c4dbaee82f58.json`; SQL cleanup yang disiapkan sebelum fixture: `.git/f05-hp-cleanup-d979baca-9065-45fd-adb5-c4dbaee82f58.sql`. Keduanya diabaikan Git dan tidak berisi kredensial. Runner: `.git/f05-hp-fixture.mjs` / `.ps1`, dengan key/token hanya di memori.

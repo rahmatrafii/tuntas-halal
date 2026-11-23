@@ -32,12 +32,13 @@ test("F03 native forms and real local sessions enforce CRUD, retry, conflict, te
     }
     return {response,html:await response.text()};
   }
-  async function nativeForm(path,label,jar){
-    const page=await request(path,jar),form=document(page.html).querySelector(`form[aria-label="${label}"]`);
+  function formFromHtml(html,label){
+    const form=document(html).querySelector(`form[aria-label="${label}"]`);
     assert(Boolean(form),"expected native business form is available");
     const body=new FormData();for(const input of form.querySelectorAll("input[name],textarea[name],select[name]"))if(!["checkbox","radio"].includes(input.type)||input.checked)body.append(input.name,input.value);
     return body;
   }
+  async function nativeForm(path,label,jar){return formFromHtml((await request(path,jar)).html,label);}
   async function submit(path,label,values,jar,prepared){
     const body=prepared??await nativeForm(path,label,jar);
     for(const [key,value]of Object.entries(values))body.set(key,value);
@@ -57,6 +58,9 @@ test("F03 native forms and real local sessions enforce CRUD, retry, conflict, te
       users[label]={id:user.id,jar};
     }
     const base=`/staf/lembaga/${orgA}`,otherBase=`/staf/lembaga/${orgB}`,a=users.a.jar;
+    const emptyQueue=await request(`${base}/antrean`,a);
+    assert([...document(emptyQueue.html).querySelectorAll("h1")].some(h=>h.textContent==="Antrean tindakan"),"F07 queue route renders for an active companion after the streaming shell");
+    assert(emptyQueue.html.includes("Belum ada revisi aktif"),"F07 real empty state");
     assert.equal(destination(await request(`${base}/kontak`)),"/staf/login");
     const initialPage=await request(`${base}/kontak`,a);
     assert.equal(initialPage.response.status,200,"contacts route exists for active staff");
@@ -205,6 +209,46 @@ test("F03 native forms and real local sessions enforce CRUD, retry, conflict, te
     const savedCaseForm=await nativeForm(`${casePath}/edit`,"Simpan kasus usaha",a);
     assert.equal(destination(await submit(`${casePath}/edit`,"Simpan kasus usaha",{reference:"REF-F03"},a,savedCaseForm)),casePath);
     assert((await request(casePath,a)).html.includes("REF-F03"));
+    // F07: real PostgREST embedded OR, literal search, global pages and read-only access.
+    const queueContact=randomUUID(),queueForeignContact=randomUUID(),queueCase=randomUUID(),queueSibling=randomUUID(),queueHidden=randomUUID(),queueForeign=randomUUID();
+    const specialName='F07 Usaha [100%_*] (A), "B" \\';
+    safe(await admin.from("business_contacts").insert([{id:queueContact,organization_id:orgA,owner_id:users.a.id,business_name:specialName,whatsapp_number:"6281200000881"},{id:queueForeignContact,organization_id:orgB,owner_id:users.b.id,business_name:"F07 TENANT SECRET",whatsapp_number:"6281200000882"}]),"F07 contacts");
+    safe(await admin.from("cases").insert([{id:queueCase,organization_id:orgA,contact_id:queueContact,assignee_id:users.a.id,official_reference:"F07-REF-A"},{id:queueSibling,organization_id:orgA,contact_id:queueContact,assignee_id:users.a.id,official_reference:"F07-SIBLING"},{id:queueHidden,organization_id:orgA,contact_id:queueContact,assignee_id:users.next.id,official_reference:"F07-ASSIGNEE-SECRET"},{id:queueForeign,organization_id:orgB,contact_id:queueForeignContact,assignee_id:users.b.id,official_reference:"F07-TENANT-SECRET"}]),"F07 cases");
+    const today=new Intl.DateTimeFormat("sv-SE",{timeZone:"Asia/Jakarta"}).format(new Date());
+    safe(await admin.from("revision_tasks").insert([
+      {case_id:queueCase,instruction:"F07 due past",status:"awaiting_reply",follow_up_on:"2000-01-01"},{case_id:queueCase,instruction:"F07 due today",status:"awaiting_reply",follow_up_on:today},
+      {case_id:queueCase,instruction:"F07 review",status:"needs_review"},{case_id:queueCase,instruction:"F07 send",status:"needs_sending"},
+      {case_id:queueCase,instruction:"F07 future",status:"awaiting_reply",follow_up_on:"2099-01-01"},{case_id:queueCase,instruction:"F07 null date",status:"awaiting_reply"},
+      {case_id:queueCase,instruction:"F07 completed",status:"completed"},...Array.from({length:21},(_,i)=>({case_id:queueCase,instruction:`F07 page ${String(i).padStart(2,"0")}`})),
+      {case_id:queueSibling,instruction:"F07 sibling"},{case_id:queueHidden,instruction:"F07 ASSIGNEE SECRET"},{case_id:queueForeign,instruction:"F07 TENANT SECRET"},
+    ].map(row=>({status:"needs_sending",follow_up_on:null,...row}))),"F07 tasks");
+    const queuePath=`${base}/antrean`,queueRows=html=>[...document(html).querySelectorAll(".queue-task")],queueText=html=>queueRows(html).map(row=>row.textContent).join(" ");
+    const queueBefore=safe(await admin.from("revision_tasks").select("id,status,follow_up_on,version").eq("case_id",queueCase).order("id"),"F07 tasks before");
+    const queueAuditBefore=safe(await admin.from("audit_events").select("id").eq("case_id",queueCase),"F07 audit before").length;
+    let queuePage=await request(`${queuePath}?q=F07-REF-A`,a);
+    assert.equal(queueRows(queuePage.html).length,20,"F07 global first page is bounded");
+    assert(queueText(queuePage.html).includes("F07 due past")&&queueText(queuePage.html).includes("F07 review"),"F07 includes due then review");
+    assert(!queueText(queuePage.html).includes("F07 completed"),"F07 completed hidden by default");
+    const groupTitles=[...document(queuePage.html).querySelectorAll('h2[id^="queue-"]')].map(h=>h.id);
+    assert.deepEqual(groupTitles,["queue-contact_today","queue-needs_review","queue-needs_sending"]);
+    const nextQueue=document(queuePage.html).querySelector('[aria-label="Halaman antrean"] a');assert(Boolean(nextQueue),"F07 next page exists");
+    assert.equal(new URL(nextQueue.href,origin).searchParams.get("q"),"F07-REF-A");
+    const queueSecond=await request(nextQueue.getAttribute("href"),a);assert.equal(queueRows(queueSecond.html).length,7);assert(queueText(queueSecond.html).includes("F07 future")&&queueText(queueSecond.html).includes("F07 null date"));
+    assert.equal(queueRows((await request(`${queuePath}?q=F07-REF-A&page=10000`,a)).html).length,7,"F07 high page clamps to last");
+    queuePage=await request(`${queuePath}?q=${encodeURIComponent("f07 usaha")}&status=completed`,a);assert.equal(queueRows(queuePage.html).length,1,"F07 case-insensitive contact search OR reference");assert(queueText(queuePage.html).includes("F07 completed"));
+    for(const literal of ['[100%_*] (A), "B" \\','%_*']){
+      const found=await request(`${queuePath}?q=${encodeURIComponent(literal)}&status=completed`,a);assert.equal(queueRows(found.html).length,1,"F07 punctuation searches literally");
+    }
+    const emptyInjection=await request(`${queuePath}?q=${encodeURIComponent('missing),status.eq.completed,(')}`,a);assert.equal(queueRows(emptyInjection.html).length,0,"F07 special query cannot inject a filter");assert(emptyInjection.html.includes("Tidak ada revisi yang cocok"));
+    assert.equal(queueRows((await request(`${queuePath}?q=F07-REF-A&status=awaiting_reply`,a)).html).length,4,"F07 waiting filter includes due and future/null dates");
+    assert.equal(queueRows((await request(`${queuePath}?q=F07-REF-A&status=contact_today`,a)).html).length,2,"F07 due filter uses local today");
+    const ownQueue=await request(`${queuePath}?q=F07&assignee_id=${users.next.id}`,a);assert(!queueText(ownQueue.html).includes("ASSIGNEE SECRET")&&!queueText(ownQueue.html).includes("TENANT SECRET"),"F07 forged assignee cannot widen reads");
+    const coordinatorQueue=await request(`${queuePath}?q=F07-ASSIGNEE`,users.coordinator.jar);assert(queueText(coordinatorQueue.html).includes("F07 ASSIGNEE SECRET"));assert([...document(coordinatorQueue.html).querySelectorAll('.queue-task .button')].every(link=>link.textContent==="Lihat kasus"));
+    assert.equal(queueRows((await request(`${queuePath}?q=F07`,users.b.jar)).html).length,0,"F07 other LP3H denied");
+    assert.equal(destination(await request(queuePath)),"/staf/login","F07 anonymous denied");
+    const picker=await request(`${base}/kasus?pilih=revisi`,a);assert(document(picker.html).querySelector(`.record-list a[href$="/revisi/baru"]`),"F07 add revision chooses a case");
+    assert.deepEqual(safe(await admin.from("revision_tasks").select("id,status,follow_up_on,version").eq("case_id",queueCase).order("id"),"F07 tasks after"),queueBefore,"F07 reads never mutate tasks");
+    assert.equal(safe(await admin.from("audit_events").select("id").eq("case_id",queueCase),"F07 audit after").length,queueAuditBefore,"F07 reads add no audit");
     assert(!(await request(`${base}/kontak`,users.b.jar)).html.includes("Nama terbaru F03"),"other tenant sees no contact");
     assert(!(await request(`${base}/kontak/baru`,users.coordinator.jar)).html.includes('aria-label="Simpan kontak usaha"'),"coordinator has no mutation form");
     const forged=await submit(`${contactPath}/edit`,"Simpan kontak usaha",{businessName:"FORGED",ownerId:users.coordinator.id},users.coordinator.jar,concurrent);
@@ -214,20 +258,54 @@ test("F03 native forms and real local sessions enforce CRUD, retry, conflict, te
     const otherOrgPost=await submit(`${otherBase}/kontak/baru`,"Simpan kontak usaha",{businessName:"CROSS-TENANT",phone:"081200000998"},a,crossForm);
     assert(!destination(otherOrgPost),"cross-tenant direct mutation is denied");
     assert.equal(safe(await admin.from("business_contacts").select("id").eq("id",crossForm.get("resourceId")),"cross tenant write rejection").length,0);
-    const writeClient=createClient(process.env.SUPABASE_TEST_URL,process.env.SUPABASE_TEST_PUBLISHABLE_KEY,{auth:{persistSession:false,autoRefreshToken:false}});
-    const key=[...users.coordinator.jar.keys()].find(key=>/^sb-.*-auth-token(?:\.0)?$/.test(key)).replace(/\.0$/,"");
-    const encoded=users.coordinator.jar.get(key)??[...users.coordinator.jar].filter(([name])=>name.startsWith(`${key}.`)).sort(([a],[b])=>a.localeCompare(b)).map(([,v])=>v).join("");
-    const session=JSON.parse(Buffer.from(encoded.replace(/^base64-/,""),"base64url").toString());
-    safe(await writeClient.auth.setSession(session),"coordinator local session");
     const oldForm=await nativeForm(`${casePath}/edit`,"Simpan kasus usaha",a);
-    safe(await writeClient.rpc("transfer_case",{p_id:caseId,p_expected_version:2,p_assignee_id:users.next.id,p_request_id:randomUUID()}),"local fixture transfer");
+    const coordinator=users.coordinator.jar, transferPath=`${casePath}/alih`, transferLabel="Alihkan penanggung jawab";
+    const filteredCases=await request(`${base}/kasus?pendamping=${users.next.id}`,coordinator);
+    assert.equal(document(filteredCases.html).querySelector('select[name="pendamping"]')?.value,users.next.id);
+    assert(!filteredCases.html.includes("REF-F03")&&filteredCases.html.includes("F07-ASSIGNEE-SECRET"),"F08 coordinator filters by current assignee");
+    assert(!(await request(transferPath,a)).html.includes(`aria-label="${transferLabel}"`),"F08 transfer form is coordinator-only");
+    const transferPage=await request(transferPath,coordinator);
+    const recipientOptions=[...document(transferPage.html).querySelectorAll('select[name="recipient"] option')].map(option=>option.value).filter(Boolean);
+    assert.deepEqual(recipientOptions,[users.next.id],"F08 only offers another active companion in this organization");
+    const transferSeed=formFromHtml(transferPage.html,transferLabel);
+    const attempt=(values,jar=coordinator,prepared=new FormData())=>{
+      if(!prepared.has("seed")) for(const [key,value] of transferSeed)prepared.append(key,value);
+      return submit(transferPath,transferLabel,values,jar,prepared);
+    };
+    assert((await attempt({recipient:users.next.id})).html.includes("Centang konfirmasi"));
+    for(const recipient of [users.b.id,users.a.id,users.coordinator.id]){
+      assert((await attempt({recipient,confirm:"on"})).html.includes("Pilih pendamping aktif yang berbeda"));
+    }
+    assert(!destination(await attempt({recipient:users.next.id,confirm:"on"},a)),"F08 direct companion transfer is rejected");
+    safe(await admin.from("memberships").update({is_active:false}).eq("organization_id",orgA).eq("user_id",users.next.id),"deactivate transfer candidate");
+    assert((await attempt({recipient:users.next.id,confirm:"on"})).html.includes("Pilih pendamping aktif yang berbeda"));
+    safe(await admin.from("memberships").update({is_active:true}).eq("organization_id",orgA).eq("user_id",users.next.id),"restore transfer candidate");
+    safe(await admin.from("cases").update({official_reference:"REF-F03"}).eq("id",caseId),"concurrent case version");
+    const staleTransfer=await attempt({recipient:users.next.id,confirm:"on"});
+    assert(staleTransfer.html.includes("Penanggung jawab terbaru"));
+    const reviewed=()=>formFromHtml(staleTransfer.html,transferLabel);
+    const reviewedVersion=document(staleTransfer.html).querySelector('button[name="reviewVersion"]')?.value;
+    assert.equal(reviewedVersion,"3");
+    assert(!destination(await attempt({recipient:users.next.id,confirm:"on"},coordinator,reviewed())),"F08 conflict requires review");
+    assert.equal(destination(await attempt({reviewVersion:reviewedVersion},coordinator,reviewed())),casePath,"F08 reviewed transfer succeeds");
+    assert.equal(destination(await attempt({reviewVersion:reviewedVersion},coordinator,reviewed())),casePath,"F08 retry returns existing receipt");
+    const transferAudit=safe(await admin.from("audit_events").select("actor_id,before,after").eq("case_id",caseId).eq("event_type","case_transferred"),"F08 audit");
+    assert.equal(transferAudit.length,1);
+    assert.equal(transferAudit[0].actor_id,users.coordinator.id);
+    assert.equal(transferAudit[0].before.assignee_id,users.a.id);
+    assert.equal(transferAudit[0].after.assignee_id,users.next.id);
+    const transferDetail=await request(`${casePath}?hasil=dialihkan`,coordinator);
+    assert(transferDetail.html.includes("Pengalihan kasus tercatat")&&transferDetail.html.includes("Pendamping dialihkan"));
     assert(!(await request(casePath,a)).html.includes("REF-F03"),"old assignee loses transferred case");
+    assert.equal(queueRows((await request(`${queuePath}?q=REF-F03`,a)).html).length,0,"F07 old assignee loses transferred revisions");
+    assert(queueRows((await request(`${queuePath}?q=REF-F03`,users.next.jar)).html).length>0,"F07 receiving assignee sees transferred revisions");
     assert(!(await submit(draftPath,draftLabel,{continueChat:"",draftRequest:JSON.stringify(draftPayload)},a,draftForm)).html.includes("Draf sudah diperiksa"),"stale draft action denied after transfer");
     assert(!destination(await submit(revisionEdit,revisionLabel,{instruction:"OLD ASSIGNEE"},a,oldRevisionForm)),"old assignee task mutation denied");
     assert(!destination(await submit(revisionEdit,revisionLabel,{},a,revisionUpdate)),"old task receipt cannot recover transferred access");
     assert.equal(destination(await submit(revisionEdit,revisionLabel,{instruction:"Penerima pindahan"},users.next.jar)),casePath,"new assignee may edit task despite not owning contact");
     const nextRevisionForm=await nativeForm(revisionEdit,revisionLabel,users.next.jar);
     safe(await admin.from("memberships").update({is_active:false}).eq("organization_id",orgA).eq("user_id",users.next.id),"revoke task assignee");
+    assert.equal(destination(await request(queuePath,users.next.jar)),"/staf/akses-terbatas","F07 revoked membership cannot read queue");
     assert.equal(destination(await submit(revisionEdit,revisionLabel,{},users.next.jar,nextRevisionForm)),"/staf/akses-terbatas","revoked assignee cannot mutate task");
     safe(await admin.from("memberships").update({is_active:true}).eq("organization_id",orgA).eq("user_id",users.next.id),"restore local task assignee");
     safe(await admin.from("revision_tasks").insert(Array.from({length:21},(_,i)=>({case_id:caseId,instruction:`Revisi halaman ${i}`}))),"task pagination fixtures");

@@ -12,9 +12,11 @@ export default async function Page() {
     <ul className="staff-memberships">{staff.memberships.map(item => <li key={item.organizationId}>
       <strong>{item.name}</strong>
       <span>{item.role === "coordinator" ? "Koordinator LP3H" : "Pendamping PPH"} · {item.timezone}</span>
-      <div className="record-actions"><Link className="button outline" href={`/staf/lembaga/${item.organizationId}/kontak`}>Kontak usaha</Link><Link className="button primary" href={`/staf/lembaga/${item.organizationId}/kasus`}>Kasus usaha</Link></div>
+      <div className="record-actions"><Link className="button primary" href={`/staf/lembaga/${item.organizationId}/antrean`}>Antrean tindakan</Link><Link className="button outline" href={`/staf/lembaga/${item.organizationId}/kasus`}>Kasus usaha</Link><Link className="button outline" href={`/staf/lembaga/${item.organizationId}/kontak`}>Kontak usaha</Link></div>
     </li>)}</ul>
-    <p className="notice">Pilih LP3H untuk mengelola kontak, kasus, revisi, dan draf WhatsApp sesuai akses Anda.</p>
+    {staff.memberships.some(item=>item.role==="companion")&&<details className="record-disclosure account-code">
+      <summary>Kode akun pendamping</summary><p>{staff.userId}</p>
+    </details>}
     <LogoutForm action={logoutAction} />
   </StaffFrame>;
 }

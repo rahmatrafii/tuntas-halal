@@ -65,6 +65,12 @@ Perubahan URL dari client tidak boleh melewati pemeriksaan akses. Alur panel des
 
 ## Keputusan teknis
 
+F08 menambah filter penanggung jawab pada daftar kasus koordinator dan halaman `/staf/lembaga/[organizationId]/kasus/[caseId]/alih`. Pilihan pendamping berasal dari membership LP3H lewat user client dengan RLS. Tampilan memakai kode akun karena profil staf belum tersedia. Server Action memeriksa kembali peran serta kasus/LP3H dan meneruskan versi serta intent ke RPC `transfer_case`. RPC existing menyimpan penanggung jawab dan audit secara atomik. [Panduan pengalihan](STAFF_TRANSFER.md)
+
+F07 menambah `src/features/queue` dan `/staf/lembaga/[organizationId]/antrean`. Server Component menggunakan guard LP3H/client pengguna/RLS; pencarian literal OR nama/ref melalui embedded cases/contact, count per kelompok dan paginasi global 20. Form GET tidak bergantung JavaScript. Aksi menuju F05/F06; tidak ada mutasi antrean, schema atau dependency baru. Draf existing mempertahankan suntingan dan meminta keputusan bila revisi dari tautan belum dipilih. Lihat [panduan antrean](STAFF_QUEUE.md). Bukti lokal/perangkat/cloud dibedakan di PROJECT_STATUS.md.
+
+F07C kemudian membuktikan antrean melalui HTTP aplikasi localhost + Auth/database cloud development, termasuk dua zona waktu, pencarian/paginasi, read-only audit/status dan isolasi setelah transfer/revocation. Fixture sementara telah dibersihkan, fixture HP dipertahankan. [Bukti cloud](F07_CLOUD_VERIFICATION.md); browser/perangkat F07 tetap belum diuji.
+
 F06 menambah `src/features/status` untuk status/tanggal per revisi, konfirmasi pengiriman batch, progres seluruh tugas, dan riwayat kasus. Semua operasi melalui client pengguna/RLS dan `set_task_statuses`, tanpa schema baru. Form review membawa versi terbaru lewat submitter native maupun hydrated; pemulihan receipt tidak bergantung status saat ini. Lihat [panduan status staf](STAFF_STATUS.md). UI nyata F07/F08 dan pengujian F06 cloud/perangkat tetap terpisah.
 
 - App Router dan TypeScript strict; jangan membangun API HTTP tambahan jika Server Action cukup.

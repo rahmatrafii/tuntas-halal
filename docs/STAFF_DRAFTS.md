@@ -2,9 +2,9 @@
 
 ## Membuat dan memulihkan draf
 
-Buka kasus melalui area `/staf`, lalu **Draf WhatsApp**, atau **Siapkan pesan revisi ini** pada tugas aktif. Pilihan dan pesan dari draf tersimpan didahulukan ketika membuka kembali URL yang sama. Draf baru memilih seluruh revisi aktif, atau revisi sah dari tautan. Tugas selesai tidak dapat dipilih.
+Buka kasus melalui area `/staf`, lalu **Draf WhatsApp**, atau **Siapkan pesan revisi ini** pada tugas aktif. Ketika kasus sudah tuntas, buka **Informasi kasus → Kelola draf WhatsApp**. Pilihan dan pesan dari draf tersimpan didahulukan ketika membuka kembali URL yang sama. Draf baru memilih seluruh revisi aktif, atau revisi sah dari tautan. Tugas selesai tidak dapat dipilih.
 
-Editor menampilkan penerima dari kontak server. Daftar pilihan ditampilkan 20 per halaman, tetapi **Pilih semua revisi aktif** mencakup seluruh revisi kasus. Pilihan di halaman lain tetap tersedia. Server membaca tugas bertahap dan memeriksa setiap ID terpilih sebelum ekspor; pagination tidak menyembunyikan tugas setelah 20/100 pertama.
+Editor menampilkan penerima dari kontak server. Buka **Ubah pilihan revisi** untuk melihat daftar 20 per halaman. **Pilih semua revisi aktif** mencakup seluruh revisi kasus dan pilihan di halaman lain tetap tersedia. Server membaca tugas bertahap dan memeriksa setiap ID terpilih sebelum ekspor.
 
 Pesan yang belum disunting akan disusun mengikuti pilihan. Setelah suntingan manual, mengubah pilihan mempertahankan pesan dan meminta keputusan: **Susun ulang pesan** mengganti dengan instruksi terbaru, sedangkan **Gunakan pesan suntingan** mempertahankan pesan sambil menerima pilihan/penerima terbaru. Instruksi tugas di database tetap sama.
 
@@ -18,7 +18,7 @@ Draf kosong yang sengaja disimpan juga dipulihkan. Tidak menulis seed sebelum pe
 
 Perubahan tab lain memunculkan konflik. Pilih **Muat draf tab lain** atau **Pertahankan draf tab ini**; isian tidak ditimpa otomatis. Pemeriksaan nilai mentah sebelum write menangkap tab usang, tetapi `localStorage` tidak menyediakan transaksi/CAS atomik lintas tab.
 
-**Hapus draf** memerlukan konfirmasi dan hanya menghapus draf kasus itu pada akun ini. Draf tetap di browser sampai dihapus atau storage dibersihkan; logout tidak menjanjikan penghapusan fisik data. Akun lain tidak memulihkannya melalui UI. Teks yang sudah diunduh/disalin tidak dapat ditarik kembali dari jauh.
+**Pengaturan draf → Hapus draf** memerlukan konfirmasi dan hanya menghapus draf kasus itu pada akun ini. Draf tetap di browser sampai dihapus atau storage dibersihkan. Akun lain tidak memulihkannya melalui UI. Teks yang sudah diunduh/disalin tidak dapat ditarik kembali dari jauh.
 
 ## Salin dan buka WhatsApp
 

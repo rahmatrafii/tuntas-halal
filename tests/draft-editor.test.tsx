@@ -15,6 +15,18 @@ Object.defineProperty(globalThis,"FormData",{configurable:true,value:dom.window.
 const props={context:draftContext,permalink:"/pesan",action:async():Promise<DraftReply>=>({status:"ready",context:draftContext})};
 const message=()=>screen.getByLabelText("Isi draf pesan WhatsApp") as HTMLTextAreaElement;
 
+test("ready draft summarizes selection and opens the list on demand",async()=>{
+ render(createElement(DraftEditor,props));
+ await waitFor(()=>assert(message()));
+ const summary=screen.queryByText("Ubah pilihan revisi");
+ assert.equal(Boolean(summary),true,"a prepared draft should have a revision disclosure");
+ const picker=summary!.closest("details")!;
+ assert.equal(picker.open,false);
+ await userEvent.setup().click(summary!);
+ assert.equal(picker.open,true);
+ assert.equal((screen.getByRole("checkbox") as HTMLInputElement).checked,true);
+});
+
 test("long Unicode draft shows fallback, copies full text and survives reload without business writes",async()=>{
   const f=fixture({rows:{cases:[caseRow],business_contacts:[contact],revision_tasks:[taskRow]}});
   const action=async(_:DraftReply,body:FormData)=>prepareDraft(f.client,org,caseId,JSON.parse(String(body.get("draftRequest"))));
@@ -67,6 +79,25 @@ test("changing selection preserves manual message and requires an explicit decis
   await user.click(screen.getByRole("checkbox",{name:/Perbaiki foto/}));
   assert.equal(message().value,"Jangan hilangkan ini");assert(screen.getByRole("button",{name:"Gunakan pesan suntingan"}));
   assert(screen.getByRole("button",{name:"Salin pesan"}).hasAttribute("disabled"));
+});
+test("opening another queue revision requires an explicit choice while preserving the saved draft",async()=>{
+ const requestedId="99999999-9999-4999-8999-999999999999";
+ const context={...draftContext,tasks:[...draftContext.tasks,{...draftContext.tasks[0],id:requestedId,instruction:"Revisi dari antrean"}]};
+ const stored={...newDraft(context,taskId),message:"Suntingan lama jangan hilang",edited:true};
+ localStorage.setItem(draftKey(context),JSON.stringify(stored));
+ const view=render(createElement(DraftEditor,{...props,context,selectedId:requestedId}));
+ await waitFor(()=>assert.equal(message().value,"Suntingan lama jangan hilang"));
+ assert.equal((screen.getByRole("checkbox",{name:/Revisi dari antrean/}) as HTMLInputElement).checked,false);
+ assert.equal(screen.getByRole("button",{name:"Buka WhatsApp"}).hasAttribute("disabled"),true);
+ await userEvent.setup().click(screen.getByRole("button",{name:"Gunakan draf tersimpan"}));
+ assert.equal(localStorage.getItem(draftKey(context)),JSON.stringify(stored));
+ assert.equal(screen.getByRole("button",{name:"Buka WhatsApp"}).hasAttribute("disabled"),false);
+ view.unmount();render(createElement(DraftEditor,{...props,context,selectedId:requestedId}));
+ await waitFor(()=>assert.equal(message().value,"Suntingan lama jangan hilang"));
+ await userEvent.setup().click(screen.getByRole("button",{name:"Sertakan revisi ini"}));
+ assert.equal((screen.getByRole("checkbox",{name:/Revisi dari antrean/}) as HTMLInputElement).checked,true);
+ assert.equal(message().value,"Suntingan lama jangan hilang");
+ assert(screen.getByRole("region",{name:"Tinjau draf"}));
 });
 test("storage event warns instead of overwriting an active draft and explicit load adopts other tab",async()=>{
   render(createElement(DraftEditor,props));await waitFor(()=>assert(message()));

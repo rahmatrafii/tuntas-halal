@@ -232,15 +232,10 @@ export function ContactsScreen() {
                   <dd>+{contact.phone}</dd>
                 </div>
               </dl>
-              {!coordinator && (
-                <Link
-                  className="contact-edit-link"
-                  href={`/kontak/${contact.id}/edit`}
-                >
-                  Ubah kontak
-                </Link>
-              )}
               <div className="contact-actions">
+                {!coordinator && (
+                  <Link className="button white" href={`/kontak/${contact.id}/edit`}>Ubah kontak</Link>
+                )}
                 {cases.length > 0 && (
                   <Link className="button white" href={`/kasus/${cases[0].id}`}>
                     <Icon name="cases" size={18} />

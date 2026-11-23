@@ -126,3 +126,9 @@ Lembaga A: pendamping A1/A2, koordinator AK, satu anggota nonaktif; lembaga B: p
 Tambahkan pengujian browser saat integrasi fitur membutuhkan bukti end-to-end. Suite database tersedia terpisah dari `npm run check`; keduanya perlu dijalankan untuk perubahan schema/RPC. Jangan menambah suite kosong yang hanya memeriksa markup halaman setup.
 
 Kontrol browser pada sesi frontend dihentikan karena alat tidak dapat memastikan URL Chrome. Review visual 375px/390px/768px/1440px, zoom 200%, keyboard HP, native modal, dan perangkat nyata tetap belum diuji. Jangan mencoba melewati pembatasan kontrol browser; lanjutkan UI02 saat sarana yang sah tersedia.
+
+## Latihan pilot F09
+
+Pada 23 November 2026, `npm run check` (130 tes), build, `db:test` (128 assertion SQL dan concurrency), `db:auth:test` dan `db:caseload:test` lulus. Stack lokal dipertahankan tanpa reset. Latihan cloud terpisah membuktikan alur HTTP terpadu dari login, pembuatan kontak/kasus/revisi, ekspor draf tanpa mengikuti redirect, konfirmasi kirim, balasan sebagian, filter antrean, transfer, penyelesaian sampai logout dan pencabutan akses. Cleanup dua run terverifikasi nol. [Bukti cloud F09](F09_CLOUD_VERIFICATION.md)
+
+Gunakan checklist dan lembar pencatatan menit aktif untuk pilot. Pengukuran peserta dan verifikasi origin hosting, email live serta perangkat menunggu tahap pembukaan pilot. [Panduan pilot](PILOT_READINESS.md)

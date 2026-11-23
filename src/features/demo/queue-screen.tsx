@@ -163,7 +163,7 @@ export function QueueScreen() {
           </button>
         </div>
       </search>
-      <div className="filter-chips" aria-label="Filter status">
+      <div className="filter-chips queue-filter-chips" role="group" aria-label="Filter status">
         {filters.map((item) => (
           <button
             type="button"

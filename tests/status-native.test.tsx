@@ -12,5 +12,7 @@ test("native batch exposes every instruction and keeps submit available for manu
  const d=new JSDOM(html).window.document;
  assert.equal(d.querySelectorAll('input[type="checkbox"][name="taskId"]').length,21);
  assert(d.body.textContent?.includes("Native task 20"));
+ assert(d.querySelector('input[type="date"][name="followUpOn"]'));
+ assert(d.querySelector('input[type="checkbox"][name="sent"]'));
  assert.equal(d.querySelector('button[type="submit"]')?.hasAttribute("disabled"),false);
 });

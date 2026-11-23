@@ -24,9 +24,8 @@ export function LoginForm({action}: {
         <input ref={input} id="staff-email" name="email" type="email" inputMode="email"
           autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false}
           enterKeyHint="send" required maxLength={254} readOnly={pending} value={email}
-          aria-invalid={invalid} aria-describedby={invalid ? "staff-email-error" : "staff-email-help"}
+          aria-invalid={invalid} aria-describedby={invalid ? "staff-email-error" : undefined}
           onChange={event => {setEmail(event.target.value); setEditedState(state);}} />
-        <p className="field-hint" id="staff-email-help">Gunakan alamat yang diundang oleh pengelola LP3H.</p>
         {invalid && <p id="staff-email-error" className="field-error" role="alert">{state.message}</p>}
       </div>
       {showResult && state.status === "error" && <p className="notice error" role="alert" tabIndex={-1} ref={notice}>{state.message}</p>}

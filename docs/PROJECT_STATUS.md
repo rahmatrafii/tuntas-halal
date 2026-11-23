@@ -1,6 +1,6 @@
 # Status project
 
-**Diperbarui: 21 November 2026 · F01–F04 tersedia dan draf staf F05 diimplementasikan lokal; route demo tetap terpisah.**
+**Diperbarui: 23 November 2026 · F01–F08 tersedia. Persiapan dan latihan cloud F09 lulus. Pembukaan pilot, F07V, F08V, dan UI02 masih terbuka.**
 
 ## Sudah tersedia
 
@@ -262,3 +262,58 @@ Project Supabase development dibuat oleh pengguna. Satu email login fiktif dikir
 3. F05 lokal dan sesi cloud F05C selesai; lihat STAFF_DRAFTS.md/F05_CLOUD_VERIFICATION.md. F06 lokal dan cloud telah diverifikasi; lanjutkan uji HP F06 atau task F07 tersendiri sesuai instruksi pengguna. Sisa UI02 tetap memerlukan akses browser/perangkat. Fixture/undangan cloud tambahan tetap memerlukan instruksi pengguna; suite `db:*` tetap lokal.
 
 Keputusan pilot tetap terbuka: LP3H nyata, zona waktu final, retensi, hosting, dan harga. Spesifikasi produk tetap bersumber dari PRD; sistem desain aktif dari `DESIGN_SYSTEM.md`.
+
+## F06V — Lanjutan pengujian Android, 23 November 2026
+
+Pengujian diteruskan melalui scrcpy dari hasil sebelumnya yang disampaikan pengguna; layar mengonfirmasi dua revisi Menunggu balasan dengan tanggal 2026-11-30. Observasi langsung membuktikan perubahan A saja ke Perlu dicek, penolakan Selesai tanpa konfirmasi dengan isian bertahan, penyelesaian A lalu B (progres 1/2 lalu 2/2/tuntas), dan koreksi A ke Perlu dicek (1/2/belum tuntas). Reload mempertahankan status/tanggal, dan riwayat menampilkan perubahan/pelaku/waktu.
+
+Pada dua penyimpanan Selesai, pesan Koneksi terputus tampil sesaat sebelum detail sukses; tidak dilakukan retry. Penyebab belum dipastikan, sehingga F06V masih terbuka untuk temuan feedback ini. Fixture akhir: A Perlu dicek, B Selesai, keduanya bertanggal 2026-11-30, riwayat dipertahankan. Tidak ada pesan/email, fixture tambahan, cleanup, perubahan kode aplikasi/schema/config atau deploy. Check/build tidak diulang karena sesi hanya uji perangkat dan dokumentasi. [Laporan F06 HP](F06_HP_TEST.md). Catatan F06 perangkat belum diuji pada bagian sebelumnya merupakan keadaan sebelum sesi ini; UI02 menyeluruh tetap terbuka.
+
+## F06V — Perbaikan feedback dan penutupan skenario Android, 23 November 2026
+
+Atas permintaan pengguna, penyebab pesan koneksi palsu dibuktikan: catch StatusForm menelan sinyal redirect dari Server Action sukses. Perubahan minimum memakai `unstable_rethrow` dari Next.js terpasang sebelum error transport ditampilkan, dengan cleanup pending tetap di finally. Dua tes navigasi tunggal/batch diamati RED→GREEN; tes transport memastikan isian dan FormData retry tetap sama. Suite form 7/7, `npm run check` (lint/TypeScript/112 tes), dan `npm run build` lulus. Review independen tanpa temuan. Percobaan tes awal terhalang uv_os_get_passwd sandbox; beberapa run berikut dihentikan ketika assertion gagal mencoba mencetak pohon DOM, lalu assertion boolean menghasilkan dua kegagalan yang tepat sebelum fix. Peringatan search React/jsdom lama tetap ada tanpa tes gagal.
+
+Uji ulang langsung Android/scrcpy membuktikan A Perlu dicek → Selesai (2/2/tuntas), kemudian koreksi A → Perlu dicek (1/2/belum tuntas); kedua simpan sukses tanpa pesan koneksi palsu pada pengamatan transisi. Reload mempertahankan progres, status/tanggal dan dua catatan riwayat baru. Fixture kembali A Perlu dicek/B Selesai, keduanya 2026-11-30; tidak dihapus. Tidak ada pesan/email, akun/fixture tambahan, perubahan schema/config, commit/push/deploy. F06V ditutup untuk skenario Android yang diuji; UI02/lintas perangkat dan gerbang pilot tetap terbuka. Lanjut F07 bila diminta, tanpa mengulang fixture cloud. [Bukti dan batas lengkap](F06_HP_TEST.md).
+
+## F07 — Antrean staf lokal, 23 November 2026
+
+- Pengguna meminta F07 setelah menyetujui cakupan antrean tindakan, pencarian, filter dan kalender LP3H. [Rancangan](superpowers/specs/2026-11-23-f07-queue-design.md) dan [rencana/ledger](superpowers/plans/2026-11-23-f07-queue.md) mencatat implementasi inline pada checkout fitur yang sama, mempertahankan perubahan F06. Builder check tidak menemukan pertanyaan penting. Pilihan teknis server/paginasi memakai stack yang ada, bukan perubahan stack atau mandat fitur baru.
+- Route `/staf/lembaga/[organizationId]/antrean`, tautan utama membership dan navigasi lembaga kini tersedia. Urutan Hubungi hari ini → Perlu dicek → Perlu dikirim → Menunggu balasan; Selesai eksplisit lewat filter. Form GET, pencarian literal nama usaha ATAU nomor pengajuan, tanggal LP3H, pagination global 20 dan empty/error/loading tersedia. Tambah revisi membuka pemilih kasus yang mengarah ke form existing; aksi tiap revisi menuju draf/status/detail sesuai peran.
+- Server memakai client pengguna/RLS, inner cases/contact, scope LP3H dan assignee pendamping. Count per kelompok lalu hanya irisan halaman yang diminta; tidak memuat seluruh revisi ke browser atau mengulang query per card. Tidak meminta nomor WhatsApp, memanggil RPC tulis, mengubah status/audit, atau menambah schema/dependency. Query literal imatch/empty embed diuji dengan PostgREST nyata, bukan hanya fixture transport.
+- RED pertama pada modul/route belum tersedia. Tes query/UI 11/11 kemudian GREEN. HTTP pertama setelah route tersedia memperlihatkan assertion yang membaca h1 loading shell; assertion diarahkan ke konten stream. Bulk insert fixture dengan sebagian status kosong ditolak, lalu fixture diseragamkan tanpa perubahan aplikasi. Skenario HTTP aplikasi + Auth/database lokal F03–F07 kemudian lulus: empty, nama/ref/karakter khusus dan anti-injeksi filter, kelompok tanggal, page kedua/clamp, completed/waiting, koordinator read-only, tenant/assignee, transfer/revocation, pemilih kasus, status/versi/audit tetap.
+- Review independen menemukan reset Next Link dapat meninggalkan kolom filter lama dan tautan task B membuka draf tersimpan A tanpa keputusan. Keduanya direproduksi RED lalu GREEN. Form memakai key q/status; DraftEditor mempertahankan suntingan dan meminta Sertakan revisi ini/Gunakan draf tersimpan sebelum ekspor, memakai tinjauan F05 existing. Suite terarah 23/23 GREEN. Tidak ada minor yang ditunda dan tidak dilakukan re-review.
+- Pemeriksaan akhir `npm run check` lulus lint, TypeScript dan **125/125 tes**; `npm run build` lulus termasuk route antrean. Peringatan React/jsdom elemen search lama tetap ada tanpa tes gagal. HTTP F03–F07 lulus satu skenario end-to-end (150 detik); waktu itu bukan benchmark khusus query antrean. SQL/concurrency tidak diulang karena tidak ada perubahan schema/RPC/RLS. Diff whitespace diperiksa.
+- F07V/UI02 tetap terbuka: scrcpy terhubung tetapi layar hitam dan permintaan membuka HP belum mendapat respons saat penutupan. Inventory browser melaporkan host tidak tersedia; fallback akses native Chrome ditolak pemeriksaan izin otomatis karena Chrome belum disetujui. Preview visual-only dari komponen/CSS build dengan data fiktif sempat disiapkan di port 3160, lalu dihentikan tanpa membuka halaman. Tidak ada screenshot/tata letak/perangkat F07 yang dinyatakan lulus.
+- Tidak membuat fixture cloud, mengirim pesan/email, mengubah kontak/instruksi/status fixture HP, cleanup, schema/config cloud, commit/push atau deploy. Fixture HP tetap A Perlu dicek/B Selesai bertanggal 2026-11-30. Docker/stack lokal dijalankan untuk integrasi; server pengguna localhost dipertahankan. [Panduan antrean dan batas operasional](STAFF_QUEUE.md).
+
+Lanjutkan F07V saat akses perangkat tersedia, atau F08 sebagai irisan terpisah sesuai instruksi pengguna. F09 dan keputusan pilot/hosting tetap terbuka. Catatan F07 belum dikerjakan pada bagian sebelumnya adalah keadaan sebelum sesi ini.
+
+## F07C — Verifikasi bisnis cloud, 23 November 2026
+
+Pengguna meminta cloud dahulu. HTTP aplikasi localhost dengan Auth/database `tuntas-halal-dev` lulus antrean F07: empty, pencarian literal nama/ref/karakter khusus/anti-injeksi, filter empat status/kelompok due, paginasi 20 + 3/clamp/query tetap, dua LP3H dengan hari kalender berbeda, koordinator read-only, tenant/assignee/shared contact, transfer dan pencabutan membership. Fingerprint revisi serta audit/receipt tidak berubah akibat pembacaan antrean; transfer/revocation diuji terpisah sesudahnya tanpa perubahan status/tanggal/instruksi tugas.
+
+Run `8ef99762-e9e5-4501-968a-ab6f6c3d87c5` memakai dua LP3H/empat akun/dua kontak/empat kasus/28 tugas sementara. Cleanup terikat identitas sudah selesai; akun Auth dihapus/readback. Query administratif read-only terpisah menunjukkan nol sisa organisasi/membership/kontak/kasus/tugas/audit/receipt/Auth run. Guard audit `O`, RLS enam tabel aktif, migrasi tetap enam. Baseline non-kosong dan fingerprint tugas fixture HP sama sebelum/sesudah; HP lama tetap 1 LP3H/1 kasus/2 revisi, nomor pribadi tidak dibaca/dicatat.
+
+Tidak ada email/WhatsApp, perubahan kode aplikasi/schema/dependency/config, deploy atau commit/push. Check/build tidak diulang untuk sesi operasional ini. F07C ditutup; F07V/UI02/perangkat dan F09 tetap terbuka. Catatan cloud F07 belum diuji pada bagian sebelumnya adalah keadaan sebelum F07C. Izin fixture run ini selesai, bukan izin fixture/undangan berikutnya. [Bukti dan batas lengkap](F07_CLOUD_VERIFICATION.md).
+
+## F08 — Koordinator dan pengalihan kasus, 23 November 2026
+
+Daftar kasus koordinator menyediakan filter pendamping, termasuk akun nonaktif yang masih memiliki kasus. Daftar, detail dan riwayat memakai kode akun karena profil staf belum tersedia. Halaman pengalihan mewajibkan penerima aktif lain dalam LP3H dan konfirmasi eksplisit. Server Action memakai user client dan RPC F01 dengan expected version dan ID intent stabil. Konflik menampilkan data terbaru dan memerlukan peninjauan. Audit menampilkan pendamping lama/baru dan waktu kejadian. [Panduan pengalihan](STAFF_TRANSFER.md)
+
+Check 130 tes, lint, TypeScript, build, dan HTTP Auth/database lokal lulus. Review independen tidak menemukan masalah yang perlu ditindaklanjuti. Bisnis cloud melalui localhost juga lulus untuk filter, validasi penerima, penolakan akses, konflik/retry, audit tunggal, perpindahan akses kasus, isolasi kasus saudara, dan pencabutan akses. Percobaan awal menandai pengalihan ke akses terbatas sebagai kegagalan karena kriteria runner keliru. Run berikut memeriksa tujuan pengalihan dan lulus. Cleanup kedua run dikonfirmasi oleh query terpisah. Fixture HP tetap aktif dengan fingerprint revisi yang sama, RLS/guard audit aktif, jumlah migrasi tetap enam. Uji HP F08 ditunda atas arahan pengguna. [Bukti cloud](F08_CLOUD_VERIFICATION.md)
+
+## F09 — Persiapan pilot dan latihan cloud, 23 November 2026
+
+Paket pilot memuat usulan satu LP3H, dua pendamping dan satu koordinator selama dua minggu, checklist persetujuan peserta/zona/retensi/hosting, skenario peserta, lembar menit aktif dan cara membandingkan median alur lama dengan pilot. Baseline manusia menunggu peserta dan kasus sejenis. Uji HP ditunda atas arahan pengguna. [Panduan pilot](PILOT_READINESS.md)
+
+Validasi lokal lulus untuk lint, TypeScript, 130 tes aplikasi, build, 128 assertion SQL, concurrency, HTTP Auth/Mailpit dan HTTP alur bisnis. Latihan localhost + cloud development lulus dari login sampai kasus tuntas setelah pengalihan, termasuk audit, isolasi kasus saudara dan logout/pencabutan. Percobaan pertama gagal pada pencocokan angka progres di HTML mentah. Runner diperbaiki untuk membaca teks DOM serta mencocokkan status di database. Kedua run dibersihkan dan query terpisah mengonfirmasi nol data sementara. Fixture HP dipertahankan, guard audit/RLS aktif. [Bukti cloud](F09_CLOUD_VERIFICATION.md)
+
+Tahap pembukaan pilot masih terbuka sampai keputusan LP3H, baseline manusia, hosting dan pemeriksaan perangkat yang dipakai peserta tersedia. Bukti cloud memakai aplikasi localhost dan Supabase development. Tidak ada deployment, perubahan aplikasi/schema, atau pengiriman email/WhatsApp eksternal dari latihan ini.
+
+## Perapihan UI mobile
+
+Area staf menggunakan navigasi berlabel yang ringkas, kartu daftar dengan penanda tautan, dan satu aksi utama per revisi. Detail kasus mengutamakan progres dan pekerjaan revisi. Draf menampilkan ringkasan pilihan dan menempatkan aksi WhatsApp di bawah editor. Form status hanya menampilkan konfirmasi yang relevan setelah hidrasi, sementara form pengiriman memunculkan tanggal jika aturan tanggal bersama dipilih. Kontrol lengkap tersedia pada HTML awal untuk pengiriman native. Koordinator melihat kode akun ringkas dan dapat mencocokkan kode penerima lengkap sebelum pengalihan. Demo menampilkan semua label navigasi dan chip status membungkus ke baris berikutnya. [Rencana dan handoff](superpowers/plans/2026-11-23-mobile-ui.md)
+
+Pada fixture visual 375 × 812 px, tombol Siapkan pengingat berpindah dari posisi 1.026 ke 728 px dan Buka WhatsApp dari 1.619 ke 657 px. Chromium merender 24 kombinasi layar dan ukuran dari 320 hingga 1.440 px tanpa gulir horizontal halaman. Bukti memakai data fiktif lokal. UI02, F07V dan F08V masih terbuka untuk keyboard dan pengujian perangkat nyata.
+
+Lint, TypeScript, build produksi, dan 133 tes aplikasi lulus. Pengulangan suite yang tersendat berhasil diselesaikan dengan dua worker.

@@ -30,3 +30,5 @@ Tidak menambah schema/dependency, mengganti status PRD, mengirim email/WhatsApp 
 ## Verifikasi cloud development
 
 Pada 22 November 2026, F06 lulus uji bisnis melalui aplikasi localhost dengan sesi Auth dan database cloud development: status/tanggal/audit, pengiriman sebagian, retry, konflik atomik dan batas akses. Seluruh fixture sementara run telah dibersihkan; fixture HP sebelumnya dipertahankan. Lihat [laporan F06C](F06_CLOUD_VERIFICATION.md). Uji HP F06 masih terpisah.
+
+Pada 23 November 2026, skenario Android F06V yang diuji ditutup setelah perbaikan pesan koneksi palsu pada redirect sukses. Status per revisi, konfirmasi selesai, progres/koreksi, tanggal tetap, riwayat dan reload diamati melalui scrcpy; batas bukti dan keadaan fixture ada di [laporan HP](F06_HP_TEST.md). UI02 lintas perangkat tetap terbuka.
